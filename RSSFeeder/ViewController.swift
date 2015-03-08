@@ -14,9 +14,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        CoreDataManager.shared.loadFeeds()
-        
+                
         addChildViewController(menuViewController)
         menuViewController.didMoveToParentViewController(self)
         menuViewController.view.frame = view.bounds

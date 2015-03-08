@@ -23,7 +23,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         let frc = NSFetchedResultsController(
             fetchRequest: itemsFetchRequest,
             managedObjectContext: self.context,
-            sectionNameKeyPath: "feed.feedName",
+            sectionNameKeyPath: nil,
             cacheName: nil)
         
         frc.delegate = self
@@ -35,7 +35,8 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view, typically from a nib.
+        CoreDataManager.shared.loadFeeds()
+
         var error: NSError? = nil
         if (fetchedResultsController.performFetch(&error) == false) {
             print("An error occurred: \(error?.localizedDescription)")

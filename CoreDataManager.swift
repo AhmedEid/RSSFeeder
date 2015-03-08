@@ -1,4 +1,4 @@
-//
+	//
 //  CoreDataManager.swift
 //  RSSFeeder
 //
@@ -115,15 +115,14 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
             var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
             if let feed = currentFeed {
                 request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
+                let results = managedObjectContext!.executeFetchRequest(request, error: nil) as [Feed]
                 
-                var results : [Feed]? = managedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed]
-                
-                if (results != nil && results?.count > 0) {
-                    if let fetchedFeed = results![0] as Feed? {
+                if (results.count > 0) {
+                    if let fetchedFeed = results[0] as Feed? {
                         if let manyRelation = fetchedFeed.valueForKeyPath("items") as? NSMutableSet {
                             
                             manyRelation.addObject(item)
-//                            println("Appended item to feed \(fetchedFeed.feedName)")
+                            println("Appended item \(item.feedItemName) to feed \(fetchedFeed.feedName)")
                             self.saveContext()
                         }
    
