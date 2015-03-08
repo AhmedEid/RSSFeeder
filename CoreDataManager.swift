@@ -60,7 +60,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
     
     // MARK: - NSXMLParserDelegate methods
     
-    func parser(parser: NSXMLParser!, didStartElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!, attributes attributeDict: [NSObject : AnyObject]!) {
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
         eName = elementName
         
         if elementName == "title" {
@@ -72,8 +72,8 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
         }
     }
     
-    func parser(parser: NSXMLParser!, foundCharacters string: String!) {
-        let data = string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    func parser(parser: NSXMLParser, foundCharacters string: String?) {
+        let data = string!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if (!data.isEmpty) {
             if eName == "title" && hasParsedChannelTitle == false {
                 feedName += data
@@ -87,7 +87,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
         }
     }
     
-    func parser(parser: NSXMLParser!, didEndElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!) {
+    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if elementName == "title" &&  hasParsedChannelTitle == false {
             hasParsedChannelTitle = true
@@ -100,14 +100,14 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
                     currentFeed = results![0] as Feed
                 println("Fetched feed : \(currentFeed!.feedName)")
             } else {
-                let feed = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(Feed), inManagedObjectContext: self.managedObjectContext!) as Feed
+                let feed = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(Feed), inManagedObjectContext: self.managedObjectContext!) as! Feed
                 feed.feedName = feedName;
                     currentFeed = feed
                 println("Created Feed named \(feed.feedName)")
                 self.saveContext()
             }
         } else if elementName == "item" {
-            let item = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(FeedItem), inManagedObjectContext: self.managedObjectContext!) as FeedItem
+            let item = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(FeedItem), inManagedObjectContext: self.managedObjectContext!) as! FeedItem
             item.feedItemName = feedItemName
             item.feedItemURLString = feedItemURLString
 //            item.feedItemDescription = feedItemDescription
@@ -115,7 +115,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
             var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
             if let feed = currentFeed {
                 request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
-                let results = managedObjectContext!.executeFetchRequest(request, error: nil) as [Feed]
+                let results = managedObjectContext!.executeFetchRequest(request, error: nil) as! [Feed]
                 
                 if (results.count > 0) {
                     if let fetchedFeed = results[0] as Feed? {
@@ -139,7 +139,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
         self.saveContext()
     }
     
-    func parserDidEndDocument(parser: NSXMLParser!) {
+    func parserDidEndDocument(parser: NSXMLParser) {
         hasParsedChannelTitle = false
         feedName = String()
         feedItemName = String()
@@ -153,7 +153,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
     lazy var applicationDocumentsDirectory: NSURL = {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "AE.RSSFeeder" in the application's documents Application Support directory.
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-        return urls[urls.count-1] as NSURL
+        return urls[urls.count-1] as! NSURL
         }()
     
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -176,7 +176,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
             dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
             dict[NSLocalizedFailureReasonErrorKey] = failureReason
             dict[NSUnderlyingErrorKey] = error
-            error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
+            error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict as [NSObject : AnyObject])
             // Replace this with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             NSLog("Unresolved error \(error), \(error!.userInfo)")

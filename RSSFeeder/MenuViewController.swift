@@ -55,7 +55,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     
     internal func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let sections = fetchedResultsController.sections {
-            let currentSection = sections[section] as NSFetchedResultsSectionInfo
+            let currentSection = sections[section] as! NSFetchedResultsSectionInfo
             return currentSection.numberOfObjects
         }
         
@@ -63,8 +63,8 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     }
     
     internal func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as UITableViewCell
-        let item = fetchedResultsController.objectAtIndexPath(indexPath) as FeedItem
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
+        let item = fetchedResultsController.objectAtIndexPath(indexPath) as! FeedItem
         cell.textLabel?.text = item.feedItemName
         
         return cell
@@ -72,7 +72,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     
     internal func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if let sections = fetchedResultsController.sections {
-            let currentSection = sections[section] as NSFetchedResultsSectionInfo
+            let currentSection = sections[section] as! NSFetchedResultsSectionInfo
             return currentSection.name
         }
         

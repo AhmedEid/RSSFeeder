@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let menuViewController: MenuViewController! = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuViewController") as MenuViewController
+    let menuViewController: MenuViewController! = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuViewController") as! MenuViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
