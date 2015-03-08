@@ -9,13 +9,18 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    let menuViewController: MenuViewController! = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuViewController") as MenuViewController
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         CoreDataManager.shared.loadFeeds()
         
-        // Do any additional setup after loading the view, typically from a nib.
+        addChildViewController(menuViewController)
+        menuViewController.didMoveToParentViewController(self)
+        menuViewController.view.frame = view.bounds
+        view.addSubview(menuViewController.view)
     }
 
     override func didReceiveMemoryWarning() {

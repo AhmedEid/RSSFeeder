@@ -12,18 +12,19 @@ import CoreData
 class CoreDataManager: NSObject, NSXMLParserDelegate {
     
     let feeds = ["http://feeds.feedburner.com/TechCrunch/startups",
-        "http://feeds.feedburner.com/TechCrunch/fundings-exits",
-        "http://feeds.feedburner.com/TechCrunch/social",
-        "http://feeds.feedburner.com/Mobilecrunch",
-        "http://feeds.feedburner.com/crunchgear",
-        "http://feeds.feedburner.com/TechCrunch/gaming",
-        "http://feeds.feedburner.com/Techcrunch/europe",
-        "http://feeds.feedburner.com/TechCrunchIT",
-        "http://feeds.feedburner.com/TechCrunch/greentech"];
+       "http://feeds.feedburner.com/TechCrunch/fundings-exits"]
+//        "http://feeds.feedburner.com/TechCrunch/social",
+//        "http://feeds.feedburner.com/Mobilecrunch",
+//        "http://feeds.feedburner.com/crunchgear",
+//        "http://feeds.feedburner.com/TechCrunch/gaming",
+//        "http://feeds.feedburner.com/Techcrunch/europe",
+//        "http://feeds.feedburner.com/TechCrunchIT",
+//        "http://feeds.feedburner.com/TechCrunch/greentech"];
     
     var parser: NSXMLParser = NSXMLParser()
     var feedName: String = String()
     var feedItemName: String = String()
+    var feedItemDescription: String = String()
     var feedItemURLString: String = String()
     var eName: String = String()
     
@@ -67,6 +68,7 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
         } else if elementName == "item" {
             feedItemName = String()
             feedItemURLString = String()
+            feedItemDescription = String()
         }
     }
     
@@ -79,6 +81,8 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
                 feedItemURLString += data
             } else if eName == "title" && hasParsedChannelTitle == true {
                 feedItemName += data
+            } else if eName == "description" {
+                feedItemDescription += data
             }
         }
     }
@@ -94,25 +98,42 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
                 
                 if (results != nil && results?.count > 0) {
                     currentFeed = results![0] as Feed
-                println("Fetched feeds : \(results)")
+                println("Fetched feed : \(currentFeed!.feedName)")
             } else {
                 let feed = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(Feed), inManagedObjectContext: self.managedObjectContext!) as Feed
                 feed.feedName = feedName;
                     currentFeed = feed
                 println("Created Feed named \(feed.feedName)")
                 self.saveContext()
-
             }
         } else if elementName == "item" {
             let item = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(FeedItem), inManagedObjectContext: self.managedObjectContext!) as FeedItem
             item.feedItemName = feedItemName
             item.feedItemURLString = feedItemURLString
-
-            if let manyRelation = currentFeed?.valueForKeyPath("items") as? NSMutableSet {
-                manyRelation.addObject(item)
+//            item.feedItemDescription = feedItemDescription
+            
+            var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
+            if let feed = currentFeed {
+                request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
                 
+                var results : [Feed]? = managedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed]
+                
+                if (results != nil && results?.count > 0) {
+                    if let fetchedFeed = results![0] as Feed? {
+                        if let manyRelation = fetchedFeed.valueForKeyPath("items") as? NSMutableSet {
+                            
+                            manyRelation.addObject(item)
+//                            println("Appended item to feed \(fetchedFeed.feedName)")
+                            self.saveContext()
+                        }
+   
+                    }
+                    //                println("Fetched feeds : \(results)")
+                }
+
             }
             
+
             //           println("                        Item name \(item.feedItemName)")
 ////            blogPosts.append(blogPost)
         }        
@@ -124,44 +145,9 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
         feedName = String()
         feedItemName = String()
         feedItemURLString = String()
+        feedItemDescription = String()
         eName = String()
     }
-
-    
-    // MARK: fetches
-    
-    func executeFetchRequest(request:NSFetchRequest)-> Array<AnyObject>?{
-        
-        var results:Array<AnyObject>?
-        self.managedObjectContext!.performBlockAndWait{
-            var fetchError:NSError?
-            results = self.managedObjectContext!.executeFetchRequest(request, error: &fetchError)
-            
-            if let error = fetchError {
-                println("Warning!! \(error.description)")
-            }
-        }
-        return results
-        
-    }
-    
-    
-    func executeFetchRequest(request:NSFetchRequest, completionHandler:(results: Array<AnyObject>?) -> Void)-> (){
-        
-        self.managedObjectContext!.performBlock{
-            var fetchError:NSError?
-            var results:Array<AnyObject>?
-            results = self.managedObjectContext!.executeFetchRequest(request, error: &fetchError)
-            
-            if let error = fetchError {
-                println("Warning!! \(error.description)")
-            }
-            
-            completionHandler(results: results)
-        }
-        
-    }
-
     
     //MARK: - Core Data Stack
     

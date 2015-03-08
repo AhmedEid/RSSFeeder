@@ -17,6 +17,7 @@
 		9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */; };
 		9EA5B6E31AABEA0A00603C5A /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E21AABEA0A00603C5A /* FeedItem.swift */; };
 		9EA5B6E51AABEA0B00603C5A /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E41AABEA0B00603C5A /* Feed.swift */; };
+		9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = ../CoreDataManager.swift; sourceTree = "<group>"; };
 		9EA5B6E21AABEA0A00603C5A /* FeedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		9EA5B6E41AABEA0B00603C5A /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
+		9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 			children = (
 				9EA5B6BD1AABE5B400603C5A /* AppDelegate.swift */,
 				9EA5B6C21AABE5B400603C5A /* ViewController.swift */,
+				9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */,
 				9EA5B6E61AABEA1400603C5A /* Model */,
 				9EA5B6C41AABE5B400603C5A /* Main.storyboard */,
 				9EA5B6C71AABE5B400603C5A /* Images.xcassets */,
@@ -235,6 +238,7 @@
 				9EA5B6C31AABE5B400603C5A /* ViewController.swift in Sources */,
 				9EA5B6E51AABEA0B00603C5A /* Feed.swift in Sources */,
 				9EA5B6BE1AABE5B400603C5A /* AppDelegate.swift in Sources */,
+				9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */,
 				9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */,
 				9EA5B6E31AABEA0A00603C5A /* FeedItem.swift in Sources */,
 				9EA5B6C11AABE5B400603C5A /* RSSFeeder.xcdatamodeld in Sources */,
@@ -363,6 +367,7 @@
 				INFOPLIST_FILE = RSSFeeder/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -373,6 +378,7 @@
 				INFOPLIST_FILE = RSSFeeder/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
@@ -429,6 +435,7 @@
 				9EA5B6DC1AABE5B500603C5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9EA5B6DD1AABE5B500603C5A /* Build configuration list for PBXNativeTarget "RSSFeederTests" */ = {
 			isa = XCConfigurationList;
@@ -437,6 +444,7 @@
 				9EA5B6DF1AABE5B500603C5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
