@@ -234,6 +234,10 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
         setupToolbar()
     }
     
+    func menuCloseButtonTapped() {
+        toggleMenu()
+    }
+    
     //MARK: Toolbar
     
     func setupToolbar() {

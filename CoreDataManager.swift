@@ -129,8 +129,9 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
             let item = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(FeedItem), inManagedObjectContext: self.managedObjectContext!) as! FeedItem
             item.feedItemName = feedItemName
             item.feedItemURLString = feedItemURLString
+//            item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
             item.feedItemDescription = feedItemDescription
-            
+
             dateFormatter.dateFormat = "EEE, dd MM yyyy HH:mm:ss zzz"
             if let date = dateFormatter.dateFromString(feedItemPublishedDate) {
                 item.feedItemPublishedDate = date
