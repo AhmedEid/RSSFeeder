@@ -15,67 +15,51 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     internal var context: NSManagedObjectContext = CoreDataManager.shared.managedObjectContext!
     
     @IBOutlet weak var tableView: UITableView!
-        
-    lazy var fetchedResultsController: NSFetchedResultsController = {
-        let itemsFetchRequest = NSFetchRequest(entityName: "FeedItem")
-        itemsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "feed.feedName", ascending: true), NSSortDescriptor(key: "feedItemName", ascending: true)]
-        
-        let frc = NSFetchedResultsController(
-            fetchRequest: itemsFetchRequest,
-            managedObjectContext: self.context,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-        
-        frc.delegate = self
-        
-        return frc
-        }()
+    var feeds = [Feed]()
     
     override internal func viewDidLoad() {
         
         super.viewDidLoad()
-
-        CoreDataManager.shared.loadFeeds()
-
-        var error: NSError? = nil
-        if (fetchedResultsController.performFetch(&error) == false) {
-            print("An error occurred: \(error?.localizedDescription)")
-        }
+        tableView.backgroundColor = UIColor.yellowColor()
         
+        CoreDataManager.shared.loadFeedsFromServer()
+        feeds = CoreDataManager.shared.fetchFeeds()
+        tableView.reloadData()
+
     }
     
     // MARK: TableView Data Source
     internal func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if let sections = fetchedResultsController.sections {
-            return sections.count
-        }
-        
-        return 0
+        return feeds.count
     }
     
     internal func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let sections = fetchedResultsController.sections {
-            let currentSection = sections[section] as! NSFetchedResultsSectionInfo
-            return currentSection.numberOfObjects
-        }
-        
-        return 0
+        let feed = feeds[section]
+        return feed.items.count
     }
     
     internal func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
-        let item = fetchedResultsController.objectAtIndexPath(indexPath) as! FeedItem
+        let feed = feeds[indexPath.section]
+        var itemsArray : [FeedItem] = feed.items.allObjects as! [FeedItem]
+        let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+        let item = sortedItemsArray[indexPath.row]
+        println("\(item.feedItemPublishedDate)")
         cell.textLabel?.text = item.feedItemName
         
         return cell
     }
     
     internal func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if let sections = fetchedResultsController.sections {
-            let currentSection = sections[section] as! NSFetchedResultsSectionInfo
-            return currentSection.name
-        }
-        
-        return nil
+        let feed = feeds[section]
+        return feed.feedName
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let feed = feeds[indexPath.section]
+        var itemsArray : [FeedItem] = feed.items.allObjects as! [FeedItem]
+        let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+        let item = sortedItemsArray[indexPath.row]
+        //Pass item to viewController
     }
 }

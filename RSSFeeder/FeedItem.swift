@@ -14,6 +14,7 @@ import CoreData
 class FeedItem: NSManagedObject {
 
     @NSManaged var feedItemName: String
+    @NSManaged var feedItemPublishedDate: NSDate
     @NSManaged var feedItemDescription: String
     @NSManaged var feedItemURLString: String
     @NSManaged var feed: NSManagedObject
