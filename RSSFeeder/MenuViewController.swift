@@ -10,12 +10,20 @@ import Foundation
 import UIKit
 import CoreData
 
+protocol MenuDelegate {
+    func didSelectFeedItem(feed:Feed, item:FeedItem)
+}
+
 class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     
+    //Data
     internal var context: NSManagedObjectContext = CoreDataManager.shared.managedObjectContext!
-    
-    @IBOutlet weak var tableView: UITableView!
     var feeds = [Feed]()
+
+    //Views
+    @IBOutlet weak var tableView: UITableView!
+    
+    var delegate: MenuDelegate?
     
     override internal func viewDidLoad() {
         
@@ -60,6 +68,6 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         var itemsArray : [FeedItem] = feed.items.allObjects as! [FeedItem]
         let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
         let item = sortedItemsArray[indexPath.row]
-        //Pass item to viewController
+        delegate?.didSelectFeedItem(feed, item: item)
     }
 }

@@ -8,24 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
     
     //Data 
     var feeds:[Feed] = []
     
-    var currentFeed:Feed? {
-        didSet {
-            if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
-                let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-                if let feedItemToPresent = sortedItemsArray.first {
-                    self.currentFeedItem = feedItemToPresent
-                    if let i = find(sortedItemsArray, feedItemToPresent) {
-                        self.indexOfCurrentArticleInFeed = i
-                    }
-                }
-            }
-        }
-    }
+    var currentFeed:Feed?
     
     var currentFeedItem:FeedItem? {
         didSet {
@@ -42,6 +30,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var toolbar: UIToolbar!
     @IBOutlet weak var titleLabel: UILabel!
     var blackOverlayView = UIView(frame: CGRectZero)
+    var toolbarProgressView:ToolbarProgressView?
     
     //Constraints 
     var menuLeftConstraint:NSLayoutConstraint?
@@ -49,6 +38,7 @@ class ViewController: UIViewController {
     //State
     var isShowingMenu = true
     var indexOfCurrentArticleInFeed = 0
+    var indexOfCurrentFeed = 0
     
     //Actions
     @IBAction func menuButtonTapped(sender: AnyObject) {
@@ -83,29 +73,78 @@ class ViewController: UIViewController {
         }
     }
     
+    func previousFeedButtonTapped() {
+        let previousIndex = self.indexOfCurrentFeed-1
+        if (previousIndex >= 0) {
+            let previousFeed = feeds[previousIndex]
+            self.currentFeed = previousFeed
+            
+            //Set current article as first in feed
+            if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
+                let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+                if let feedItemToPresent = sortedItemsArray.first {
+                    self.currentFeedItem = feedItemToPresent
+                    if let i = find(sortedItemsArray, feedItemToPresent) {
+                        self.indexOfCurrentArticleInFeed = i
+                    }
+                }
+            }
+            indexOfCurrentFeed = previousIndex
+            setupToolbar()
+        }
+    }
+    
+    func nextFeedButtonTapped() {
+        let nextIndex = self.indexOfCurrentFeed+1
+        if (nextIndex < feeds.count) {
+            let nextFeed = feeds[nextIndex]
+            self.currentFeed = nextFeed
+            indexOfCurrentFeed = nextIndex
+            
+            //Set current article as first in feed
+            if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
+                let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+                if let feedItemToPresent = sortedItemsArray.first {
+                    self.currentFeedItem = feedItemToPresent
+                    if let i = find(sortedItemsArray, feedItemToPresent) {
+                        self.indexOfCurrentArticleInFeed = i
+                    }
+                }
+            }
+            
+            setupToolbar()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         addMenuViewController()
-        
-//        webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://Apple.com")!))
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         feeds = CoreDataManager.shared.fetchFeeds()
         currentFeed = feeds.first
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        //Set current article as first in feed
+        if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
+            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+            if let feedItemToPresent = sortedItemsArray.first {
+                self.currentFeedItem = feedItemToPresent
+                if let i = find(sortedItemsArray, feedItemToPresent) {
+                    self.indexOfCurrentArticleInFeed = i
+                }
+            }
+        }
+        setupToolbar()
     }
     
-    //MARK - Menu
+    //MARK - Menu & Menu Delegate
     
     func addMenuViewController() {
         addChildViewController(menuViewController)
+        menuViewController.delegate = self
         menuViewController.didMoveToParentViewController(self)
         menuViewController.view.setTranslatesAutoresizingMaskIntoConstraints(false)
         view.addSubview(menuViewController.view)
@@ -174,8 +213,75 @@ class ViewController: UIViewController {
         }
     }
     
+    func didSelectFeedItem(feed: Feed, item:FeedItem) {
+        toggleMenu()
+        self.currentFeed = feed
+        self.currentFeedItem = item
+        
+        //Set indexOfCurrentArticleInFeed
+        if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
+            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+                if let i = find(sortedItemsArray, currentFeedItem!) {
+                    self.indexOfCurrentArticleInFeed = i
+            }
+        }
+        
+        //Set indexOfFeed
+        if let i = find(feeds, currentFeed!) {
+            self.indexOfCurrentFeed = i
+        }
+
+        setupToolbar()
+    }
+    
+    //MARK: Toolbar
+    
+    func setupToolbar() {
+        
+        let previousIndex = self.indexOfCurrentFeed-1
+        var previousFeedTitle = ""
+        if (previousIndex >= 0) {
+            let previousFeed = feeds[previousIndex]
+            previousFeedTitle = previousFeed.feedName
+        }
+
+        let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
+        let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+
+        toolbarProgressView = NSBundle.mainBundle().loadNibNamed("ToolbarProgressView", owner: self, options: nil)[0] as? ToolbarProgressView
+        toolbarProgressView?.frame = CGRectMake(0, 0, 250, 20)
+        toolbarProgressView?.progressViewTextLabel.text = currentFeed?.feedName
+        toolbarProgressView?.progressViewPageControl.numberOfPages = feeds.count
+        toolbarProgressView?.progressViewPageControl.currentPage = indexOfCurrentFeed
+        
+        let progressViewBarButtonItem = UIBarButtonItem(customView: toolbarProgressView!)
+        
+        let nextIndex = self.indexOfCurrentFeed+1
+        var nextFeedTitle = ""
+        if (nextIndex < feeds.count) {
+            let nextFeed = feeds[nextIndex]
+            nextFeedTitle = nextFeed.feedName
+        }
+        
+        let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
+        
+        toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
+    }
+    
+    //MARK: Gestures
+    
     func tapGestureRecognized() {
         toggleMenu()
+    }
+    
+    //MARK: WebView
+    
+    func webViewDidStartLoad(webView: UIWebView) {
+        
+    }
+    
+    func webViewDidFinishLoad(webView: UIWebView) {
+        
     }
 }
 

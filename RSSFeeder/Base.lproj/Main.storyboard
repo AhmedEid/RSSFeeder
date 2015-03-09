@@ -74,15 +74,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c8V-br-msn">
-                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="i0e-C5-BaR"/>
-                                </constraints>
-                                <items>
-                                    <barButtonItem title="Item" id="f4D-V0-Wrh"/>
-                                </items>
-                            </toolbar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bjN-cn-Daw">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="64"/>
                                 <subviews>
@@ -151,6 +142,15 @@
                                     <action selector="nextArticleButtonTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="fxE-PR-yDv"/>
                                 </connections>
                             </button>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c8V-br-msn">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="i0e-C5-BaR"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem title="Item" id="f4D-V0-Wrh"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -163,7 +163,7 @@
                             <constraint firstAttribute="trailing" secondItem="c8V-br-msn" secondAttribute="trailing" id="Pg0-gL-7Rz"/>
                             <constraint firstItem="ygL-Fx-DEW" firstAttribute="top" secondItem="bjN-cn-Daw" secondAttribute="bottom" id="QfO-6e-xnQ"/>
                             <constraint firstItem="bjN-cn-Daw" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="topMargin" id="ZX6-wa-jNC"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="c8V-br-msn" secondAttribute="bottom" id="dNW-9b-PRP"/>
+                            <constraint firstItem="c8V-br-msn" firstAttribute="bottom" secondItem="kh9-bI-dsS" secondAttribute="bottom" id="dNW-9b-PRP"/>
                             <constraint firstAttribute="centerY" secondItem="E9b-SX-ZPp" secondAttribute="centerY" id="izJ-tO-iEv"/>
                             <constraint firstItem="c8V-br-msn" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="pC6-h2-mO4"/>
                             <constraint firstAttribute="trailing" secondItem="E9b-SX-ZPp" secondAttribute="trailing" constant="15" id="rGu-eB-8Dz"/>
