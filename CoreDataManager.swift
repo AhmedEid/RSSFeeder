@@ -11,6 +11,7 @@
     
     protocol CoreDataManagerDelegate {
         func coreDataManagerDidFinishDownloadingFeeds(feeds:[Feed])
+        func coreDataManagerDidFailDownloadingFeeds()
     }
     
     class CoreDataManager: NSObject, NSXMLParserDelegate {
@@ -89,6 +90,7 @@
                     }
                 }
             }
+            delegate?.coreDataManagerDidFailDownloadingFeeds()
         }
         
         //MARK: - Feed Loading
@@ -104,6 +106,8 @@
                     if Int(elapsedTime) > 60 {
                         loadData()
                     }
+                } else {
+                    delegate?.coreDataManagerDidFailDownloadingFeeds()
                 }
             }
         }

@@ -34,6 +34,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     var blackOverlayView = UIView(frame: CGRectZero)
     var toolbarProgressView:ToolbarProgressView?
     
+    @IBOutlet weak var topBarView: UIView!
     //Constraints
     var menuLeftConstraint:NSLayoutConstraint?
     
@@ -122,6 +123,8 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         super.viewDidLoad()
         CoreDataManager.shared.delegate = self
         
+        topBarView.backgroundColor = UIColor(rgba: "#3A59A3")
+        
         let previousButtonImage = UIImage(named: "icon-arrow-big")
         let mirroredRightImage = UIImage(CGImage: previousButtonImage!.CGImage, scale:previousButtonImage!.scale , orientation: .UpMirrored)
         nextArticleButton.setImage(mirroredRightImage, forState: .Normal)
@@ -157,6 +160,9 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     
     func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
             populateWithFeeds(feeds)
+    }
+    
+    func coreDataManagerDidFailDownloadingFeeds() {
     }
     
     //MARK - Menu & Menu Delegate

@@ -73,6 +73,7 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
                         <outlet property="tableView" destination="wXq-AK-Bn8" id="Dhq-n0-XeL"/>
+                        <outlet property="topBarView" destination="d0x-p5-hCg" id="lbu-bS-5ZZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EZi-bN-6Yb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -200,6 +201,7 @@
                         <outlet property="nextArticleButton" destination="E9b-SX-ZPp" id="Obt-dH-XXn"/>
                         <outlet property="titleLabel" destination="Ra7-bF-LWD" id="b5q-Lp-Csv"/>
                         <outlet property="toolbar" destination="c8V-br-msn" id="rPk-3A-ZpH"/>
+                        <outlet property="topBarView" destination="bjN-cn-Daw" id="0kG-D8-VnT"/>
                         <outlet property="webView" destination="ygL-Fx-DEW" id="vnv-ad-T27"/>
                     </connections>
                 </viewController>

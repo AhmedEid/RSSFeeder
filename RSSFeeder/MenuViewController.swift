@@ -32,11 +32,13 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     @IBAction func menuCloseButtonTapped(sender: AnyObject) {
         delegate?.menuCloseButtonTapped()
     }
+    @IBOutlet weak var topBarView: UIView!
     
     override internal func viewDidLoad() {
         
         super.viewDidLoad()
         tableView.backgroundColor = UIColor.whiteColor()
+        topBarView.backgroundColor = UIColor(rgba: "#3A59A3")
         tableView.registerNib(UINib(nibName: "FeedItemTableViewCell", bundle: nil), forCellReuseIdentifier: "FeedItemTableViewCell")
         
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -66,6 +68,10 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     
     func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
             populateDataWithFeeds(feeds)
+    }
+    
+    func coreDataManagerDidFailDownloadingFeeds() {
+        refreshControl.endRefreshing()
     }
     
     func populateDataWithFeeds(feeds:[Feed]) {
