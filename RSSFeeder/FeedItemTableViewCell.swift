@@ -15,11 +15,15 @@ class FeedItemTableViewCell: UITableViewCell {
     @IBOutlet weak var feedItemDescriptionLabel: UILabel!
     @IBOutlet weak var feedItemPublishedDateLabel: UILabel!
     
+    override func awakeFromNib() {
+        self.feedItemPublishedDateLabel.textColor = UIColor(rgba: "#b1b1b1")
+    }
+    
     var item:FeedItem? {
         didSet {
             self.feedItemTitleLabel.text = self.item?.feedItemName
             self.feedItemDescriptionLabel.text = self.item?.feedItemDescription;
-            self.feedItemPublishedDateLabel.text = "0:00 PM"
+            self.feedItemPublishedDateLabel.text = self.item?.feedItemPublishedString
         }
     }
 }

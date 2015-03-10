@@ -15,7 +15,7 @@ protocol MenuDelegate {
     func menuCloseButtonTapped()
 }
 
-class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDelegate, UITableViewDataSource {
+class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDelegate, UITableViewDataSource, CoreDataManagerDelegate {
     
     //Data
     internal var context: NSManagedObjectContext = CoreDataManager.shared.managedObjectContext!
@@ -41,12 +41,18 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
         tableView.addSubview(refreshControl)
         
+        CoreDataManager.shared.delegate = self
         loadData()
     }
     
+    //MARK: Data
+    
     func loadData () {
         CoreDataManager.shared.loadFeedsFromServer()
-        feeds = CoreDataManager.shared.fetchFeeds()
+    }
+    
+    func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
+        self.feeds = feeds
         tableView.reloadData()
         refreshControl.endRefreshing()
     }

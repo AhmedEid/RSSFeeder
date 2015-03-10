@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
+class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDataManagerDelegate {
     
     //Data 
     var feeds:[Feed] = []
@@ -26,13 +26,15 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
     let menuViewController: MenuViewController! = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuViewController") as! MenuViewController
     
     //Views
+    @IBOutlet weak var nextArticleButton: UIButton!
     @IBOutlet weak var webView: UIWebView!
     @IBOutlet weak var toolbar: UIToolbar!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     var blackOverlayView = UIView(frame: CGRectZero)
     var toolbarProgressView:ToolbarProgressView?
     
-    //Constraints 
+    //Constraints
     var menuLeftConstraint:NSLayoutConstraint?
     
     //State
@@ -118,14 +120,27 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CoreDataManager.shared.delegate = self
+        
+        let previousButtonImage = UIImage(named: "icon-arrow-big")
+        let mirroredRightImage = UIImage(CGImage: previousButtonImage!.CGImage, scale:previousButtonImage!.scale , orientation: .UpMirrored)
+        nextArticleButton.setImage(mirroredRightImage, forState: .Normal)
+        nextArticleButton.setImage(mirroredRightImage, forState: .Highlighted)
 
         addMenuViewController()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        feeds = CoreDataManager.shared.fetchFeeds()
-        currentFeed = feeds.first
+        populateWithFeeds(CoreDataManager.shared.fetchFeeds())
+
+    }
+    
+    //Mark: Data 
+    
+    func populateWithFeeds(feeds:[Feed]) {
+        self.feeds = feeds
+        currentFeed = self.feeds.first
         
         //Set current article as first in feed
         if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
@@ -138,6 +153,10 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
             }
         }
         setupToolbar()
+    }
+    
+    func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
+            populateWithFeeds(feeds)
     }
     
     //MARK - Menu & Menu Delegate
@@ -254,6 +273,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
         let leftImageButton = UIBarButtonItem(customView: leftImageView)
         
         let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
+        leftFeedItem.width = 200;
         
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         
@@ -273,17 +293,21 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
         }
         
         let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
-        
-        let rightImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
+        rightFeedItem.width = 200;
+
+        let rightImage = UIImage(named: "icon-arrow-small")
+        let mirroredRightImage = UIImage(CGImage: rightImage!.CGImage, scale:rightImage!.scale , orientation: .UpMirrored)
+        let rightImageView = UIImageView(image: mirroredRightImage)
         rightImageView.frame = CGRectMake(0, 0, 10, 15)
         let rightImageButton = UIBarButtonItem(customView: rightImageView)
         
-        if (!previousFeedTitle.isEmpty){
-            toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
-        } else if (!nextFeedTitle.isEmpty){
-            toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
-        } else {
+        if (!previousFeedTitle.isEmpty && !nextFeedTitle.isEmpty){
             toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
+
+        } else if (nextFeedTitle.isEmpty){
+            toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
+        } else {
+            toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
         }
     }
     
@@ -296,11 +320,11 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
     //MARK: WebView
     
     func webViewDidStartLoad(webView: UIWebView) {
-        
+        activityIndicatorView.startAnimating()
     }
     
     func webViewDidFinishLoad(webView: UIWebView) {
-        
+        activityIndicatorView.stopAnimating()
     }
 }
 

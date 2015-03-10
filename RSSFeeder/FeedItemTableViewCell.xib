@@ -28,9 +28,9 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n3x-EA-BWK">
-                        <rect key="frame" x="388" y="8" width="55" height="19"/>
+                        <rect key="frame" x="388" y="8" width="60" height="19"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="55" id="0hW-11-VgY"/>
+                            <constraint firstAttribute="width" constant="60" id="0hW-11-VgY"/>
                             <constraint firstAttribute="height" constant="19" id="nqp-eY-jJa"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -47,7 +47,7 @@
                     <constraint firstAttribute="bottom" secondItem="TbY-Kc-6LV" secondAttribute="bottom" constant="10" id="at6-uy-2aI"/>
                     <constraint firstItem="n3x-EA-BWK" firstAttribute="leading" secondItem="vOg-rY-z0W" secondAttribute="trailing" constant="5" id="bpy-JI-l49"/>
                     <constraint firstItem="vOg-rY-z0W" firstAttribute="leading" secondItem="pIk-jw-sXL" secondAttribute="leading" constant="15" id="fQV-lx-oJH"/>
-                    <constraint firstAttribute="trailing" secondItem="n3x-EA-BWK" secondAttribute="trailing" constant="15" id="sG7-aE-oxI"/>
+                    <constraint firstAttribute="trailing" secondItem="n3x-EA-BWK" secondAttribute="trailing" constant="10" id="sG7-aE-oxI"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

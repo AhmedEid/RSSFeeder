@@ -122,6 +122,13 @@
                                             <action selector="menuButtonTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="vAS-I9-If0"/>
                                         </connections>
                                     </button>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="RXC-dW-npZ">
+                                        <rect key="frame" x="570" y="30" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="2fp-SO-m3J"/>
+                                            <constraint firstAttribute="width" constant="20" id="4Ov-CH-dsz"/>
+                                        </constraints>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.16470588235294117" green="0.25098039215686274" blue="0.56470588235294117" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -129,9 +136,11 @@
                                     <constraint firstAttribute="centerX" secondItem="Ra7-bF-LWD" secondAttribute="centerX" id="4Yv-ns-Ut7"/>
                                     <constraint firstItem="A8N-ct-Eje" firstAttribute="leading" secondItem="bjN-cn-Daw" secondAttribute="leading" id="Di2-xY-oU2"/>
                                     <constraint firstItem="Ra7-bF-LWD" firstAttribute="top" secondItem="bjN-cn-Daw" secondAttribute="top" constant="30" id="PbY-3J-4ae"/>
+                                    <constraint firstAttribute="trailing" secondItem="RXC-dW-npZ" secondAttribute="trailing" constant="10" id="SC8-j3-Bq0"/>
                                     <constraint firstItem="Ra7-bF-LWD" firstAttribute="leading" secondItem="A8N-ct-Eje" secondAttribute="trailing" id="hUf-Ap-GBE"/>
                                     <constraint firstAttribute="trailing" secondItem="Ra7-bF-LWD" secondAttribute="trailing" constant="44" id="jpT-5E-67R"/>
                                     <constraint firstAttribute="height" constant="64" id="pvz-6v-NI0"/>
+                                    <constraint firstItem="RXC-dW-npZ" firstAttribute="top" secondItem="bjN-cn-Daw" secondAttribute="top" constant="30" id="u4q-D7-tfy"/>
                                 </constraints>
                             </view>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ygL-Fx-DEW">
@@ -196,6 +205,8 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="ZTl-Nf-Zwi"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="RXC-dW-npZ" id="UF4-Gp-yeq"/>
+                        <outlet property="nextArticleButton" destination="E9b-SX-ZPp" id="Obt-dH-XXn"/>
                         <outlet property="titleLabel" destination="Ra7-bF-LWD" id="b5q-Lp-Csv"/>
                         <outlet property="toolbar" destination="c8V-br-msn" id="rPk-3A-ZpH"/>
                         <outlet property="webView" destination="ygL-Fx-DEW" id="vnv-ad-T27"/>
