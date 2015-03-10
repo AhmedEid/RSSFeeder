@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7519.1" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7513.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="kCS-1L-jTP" customClass="MenuHeaderView" customModule="RSSFeeder" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ftt-g5-QDP">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="1"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="3pI-gA-Nv7"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WeT-wF-tYK">
+                    <rect key="frame" x="15" y="1" width="585" height="43"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="43" id="PZx-xS-AsD"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hNf-s7-zWG">
+                    <rect key="frame" x="0.0" y="44" width="600" height="1"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="bNd-dz-ZC7"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Ftt-g5-QDP" firstAttribute="top" secondItem="kCS-1L-jTP" secondAttribute="top" id="5Ex-3m-CIf"/>
+                <constraint firstItem="hNf-s7-zWG" firstAttribute="top" secondItem="WeT-wF-tYK" secondAttribute="bottom" id="EE8-RA-VyJ"/>
+                <constraint firstItem="hNf-s7-zWG" firstAttribute="leading" secondItem="kCS-1L-jTP" secondAttribute="leading" id="HAa-F7-3ee"/>
+                <constraint firstItem="Ftt-g5-QDP" firstAttribute="leading" secondItem="kCS-1L-jTP" secondAttribute="leading" id="IQ1-Sy-u5V"/>
+                <constraint firstAttribute="trailing" secondItem="WeT-wF-tYK" secondAttribute="trailing" id="U8S-sP-pOZ"/>
+                <constraint firstAttribute="trailing" secondItem="Ftt-g5-QDP" secondAttribute="trailing" id="fYF-vx-5m9"/>
+                <constraint firstItem="WeT-wF-tYK" firstAttribute="leading" secondItem="kCS-1L-jTP" secondAttribute="leading" constant="15" id="ieV-VM-Wue"/>
+                <constraint firstAttribute="trailing" secondItem="hNf-s7-zWG" secondAttribute="trailing" id="pPL-un-AXN"/>
+                <constraint firstItem="WeT-wF-tYK" firstAttribute="top" secondItem="Ftt-g5-QDP" secondAttribute="bottom" id="vCm-Iq-KdJ"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <connections>
+                <outlet property="bottomSeparatorView" destination="hNf-s7-zWG" id="UuM-KY-Obo"/>
+                <outlet property="textLabel" destination="WeT-wF-tYK" id="0d9-4c-mLA"/>
+                <outlet property="topSeparatorView" destination="Ftt-g5-QDP" id="E1N-hv-Xad"/>
+            </connections>
+            <point key="canvasLocation" x="425" y="159"/>
+        </view>
+    </objects>
+</document>

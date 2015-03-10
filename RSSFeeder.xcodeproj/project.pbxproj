@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E069D861AAE843600E2644C /* UIColorHexExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E069D851AAE843600E2644C /* UIColorHexExtension.swift */; };
+		9E069D881AAE857700E2644C /* MenuHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E069D871AAE857700E2644C /* MenuHeaderView.swift */; };
+		9E069D8A1AAE858300E2644C /* MenuHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E069D891AAE858300E2644C /* MenuHeaderView.xib */; };
 		9E28EFCA1AAE400F00D4729F /* ToolbarProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */; };
 		9E28EFCC1AAE401C00D4729F /* ToolbarProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */; };
 		9E82C6431AAE55410044CE69 /* FeedItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */; };
@@ -36,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9E069D851AAE843600E2644C /* UIColorHexExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorHexExtension.swift; sourceTree = "<group>"; };
+		9E069D871AAE857700E2644C /* MenuHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuHeaderView.swift; sourceTree = "<group>"; };
+		9E069D891AAE858300E2644C /* MenuHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuHeaderView.xib; sourceTree = "<group>"; };
 		9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarProgressView.swift; sourceTree = "<group>"; };
 		9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToolbarProgressView.xib; sourceTree = "<group>"; };
 		9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItemTableViewCell.swift; sourceTree = "<group>"; };
@@ -92,6 +98,8 @@
 				9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */,
 				9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */,
 				9E82C6441AAE55610044CE69 /* FeedItemTableViewCell.xib */,
+				9E069D871AAE857700E2644C /* MenuHeaderView.swift */,
+				9E069D891AAE858300E2644C /* MenuHeaderView.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -100,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */,
+				9E069D851AAE843600E2644C /* UIColorHexExtension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -256,6 +265,7 @@
 			files = (
 				9EA5B6C61AABE5B400603C5A /* Main.storyboard in Resources */,
 				9EA5B6CB1AABE5B400603C5A /* LaunchScreen.xib in Resources */,
+				9E069D8A1AAE858300E2644C /* MenuHeaderView.xib in Resources */,
 				9EA5B6C81AABE5B400603C5A /* Images.xcassets in Resources */,
 				9E28EFCC1AAE401C00D4729F /* ToolbarProgressView.xib in Resources */,
 				9E82C6451AAE55610044CE69 /* FeedItemTableViewCell.xib in Resources */,
@@ -281,8 +291,10 @@
 				9EA5B6E51AABEA0B00603C5A /* Feed.swift in Sources */,
 				9EA5B6BE1AABE5B400603C5A /* AppDelegate.swift in Sources */,
 				9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */,
+				9E069D861AAE843600E2644C /* UIColorHexExtension.swift in Sources */,
 				9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */,
 				9EA5B6E31AABEA0A00603C5A /* FeedItem.swift in Sources */,
+				9E069D881AAE857700E2644C /* MenuHeaderView.swift in Sources */,
 				9EA5B6C11AABE5B400603C5A /* RSSFeeder.xcdatamodeld in Sources */,
 				9E28EFCA1AAE400F00D4729F /* ToolbarProgressView.swift in Sources */,
 				9E82C6431AAE55410044CE69 /* FeedItemTableViewCell.swift in Sources */,

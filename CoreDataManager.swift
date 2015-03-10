@@ -49,16 +49,16 @@ class CoreDataManager: NSObject, NSXMLParserDelegate {
         }
     }
     
-    //MARK: - Feed Loading 
+    //MARK: - Feed Loading
     
     func loadFeedsFromServer() {
         
-        for feedURLString in feeds {
-            println(feedURLString)
-            parser = NSXMLParser(contentsOfURL:NSURL(string: feedURLString))!
-            parser.delegate = self
-            parser.parse()
-        }
+            for feedURLString in self.feeds {
+                println(feedURLString)
+                self.parser = NSXMLParser(contentsOfURL:NSURL(string: feedURLString))!
+                self.parser.delegate = self
+                self.parser.parse()
+            }
     }
     
     func fetchFeeds() -> [Feed] {

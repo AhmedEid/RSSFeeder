@@ -23,6 +23,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
 
     //Views
     @IBOutlet weak var tableView: UITableView!
+    let refreshControl = UIRefreshControl()
     
     var delegate: MenuDelegate?
     
@@ -33,13 +34,25 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     override internal func viewDidLoad() {
         
         super.viewDidLoad()
-        tableView.backgroundColor = UIColor.yellowColor()
+        tableView.backgroundColor = UIColor.whiteColor()
         tableView.registerNib(UINib(nibName: "FeedItemTableViewCell", bundle: nil), forCellReuseIdentifier: "FeedItemTableViewCell")
         
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
+        tableView.addSubview(refreshControl)
+        
+        loadData()
+    }
+    
+    func loadData () {
         CoreDataManager.shared.loadFeedsFromServer()
         feeds = CoreDataManager.shared.fetchFeeds()
         tableView.reloadData()
-
+        refreshControl.endRefreshing()
+    }
+    
+    func refresh(sender:AnyObject) {
+        loadData()
     }
     
     // MARK: TableView Data Source
@@ -57,14 +70,9 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 45))
-        headerView.backgroundColor = UIColor.lightGrayColor()
-        let label = UILabel(frame: headerView.frame)
-        label.textColor = UIColor.darkGrayColor()
-        let feed = feeds[section]
-        label.text = feed.feedName;
-        
-        headerView.addSubview(label)
+        let headerView = NSBundle.mainBundle().loadNibNamed("MenuHeaderView", owner: self, options: nil)[0] as? MenuHeaderView
+             let feed = feeds[section]
+        headerView?.textLabel.text = feed.feedName;
         return headerView
     }
     

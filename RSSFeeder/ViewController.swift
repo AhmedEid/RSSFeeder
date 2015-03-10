@@ -249,9 +249,14 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
             previousFeedTitle = previousFeed.feedName
         }
 
+        let leftImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
+        leftImageView.frame = CGRectMake(0, 0, 10, 15)
+        let leftImageButton = UIBarButtonItem(customView: leftImageView)
+        
         let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
+        
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-
+        
         toolbarProgressView = NSBundle.mainBundle().loadNibNamed("ToolbarProgressView", owner: self, options: nil)[0] as? ToolbarProgressView
         toolbarProgressView?.frame = CGRectMake(0, 0, 250, 20)
         toolbarProgressView?.progressViewTextLabel.text = currentFeed?.feedName
@@ -269,7 +274,17 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate {
         
         let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
         
-        toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
+        let rightImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
+        rightImageView.frame = CGRectMake(0, 0, 10, 15)
+        let rightImageButton = UIBarButtonItem(customView: rightImageView)
+        
+        if (!previousFeedTitle.isEmpty){
+            toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
+        } else if (!nextFeedTitle.isEmpty){
+            toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
+        } else {
+            toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
+        }
     }
     
     //MARK: Gestures
