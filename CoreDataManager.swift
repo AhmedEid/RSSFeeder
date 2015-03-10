@@ -39,10 +39,15 @@
         
         let dateFormatter = NSDateFormatter()
         
+        var initializedDate:NSDate?
+        var lastServerUpdatedDate: NSDate?
+        
         var currentFeed:Feed?
         
         var hasParsedChannelTitle:Bool = false
         var parsedFeeds = 0
+        
+        var loadingTimer = NSTimer()
 
         //MARK: - Singleton
         
@@ -53,14 +58,53 @@
                     static var token : dispatch_once_t = 0
                 }
                 dispatch_once(&Static.token) { Static.instance = CoreDataManager() }
-                
                 return Static.instance!
+            }
+        }
+        
+        override init() {
+            super.init()
+            loadingTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerFire:", userInfo: nil, repeats: true)
+            loadingTimer.fire()
+            initializedDate = NSDate()
+        }
+        
+        func timerFire(timer:NSTimer) {
+            //Check if not downloading/parsing data 
+            //Check if time alapsed > 300 seconds from last update
+            //Load Data 
+            
+            if let lastInitializedDate = initializedDate {
+                let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastInitializedDate)
+                println(elapsedTime)
+                //Update every 300 seconds in the foreground
+                //Reset this when app comes back into foreground
+                if Int(elapsedTime) > 60 {
+                    initializedDate = NSDate()
+                    loadData()
+                }
             }
         }
         
         //MARK: - Feed Loading
         
-        func loadFeedsFromServer() {
+        func loadFeedsFromServer(#force:Bool) {
+            if (force == true){
+                loadData()
+            } else {
+                //Never more than once per minute unless initiated by the user
+                
+                if let lastUpdatedDate = lastServerUpdatedDate {
+                    let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastUpdatedDate)
+                    println(elapsedTime)
+                    if Int(elapsedTime) > 60 {
+                        loadData()
+                    }
+                }
+            }
+        }
+        
+        func loadData() {
             deleteFeedItemsWithCompletionClosure({
                 self.parsedFeeds = 0
                 dispatch_async(self.backgroundQueue, {
@@ -78,17 +122,8 @@
             let request = NSFetchRequest(entityName: "Feed")
             if let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed] {
                 for feed in results {
-                    if (feed.items.count == 0){
-                        let items = itemsForFeed(feed)
-                        let itemsSet = NSSet(array: items)
-                        let itemsFilteredSet = itemsSet.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
-                        feed.items = itemsSet
-
-                    } else {
-                        let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
-                        feed.items = set
-                       
-                    }
+                    let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
+                    feed.items = set
                     println("Fetched Feed \(feed.feedName) with items \(feed.items.count)")
                 }
                 
@@ -97,20 +132,7 @@
             return []
         }
         
-        func itemsForFeed(feed:Feed) -> ([FeedItem]) {
-            let request = NSFetchRequest(entityName: "FeedItem")
-            request.predicate = NSPredicate(format: "feed = %@", feed)
-            if let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as? [FeedItem] {
-                return results as [FeedItem]
-            }
-            return []
-        }
-        
         // MARK: - NSXMLParserDelegate methods
-        
-        func parserDidStartDocument(parser: NSXMLParser) {
-            
-        }
         
         func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
             eName = elementName
@@ -184,19 +206,16 @@
                 
                 
                 if let feed = currentFeed {
-                    var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
-                    request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
-                    let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [Feed]
-                    
-                    if (results.count > 0) {
-                        if let fetchedFeed = results[0] as Feed? {
-                            if let manyRelation = fetchedFeed.valueForKeyPath("items") as? NSMutableSet {
-                                manyRelation.addObject(item)
-                                
-                                println("Appended item \(item.feedItemName) to feed \(fetchedFeed.feedName)")
-                            }
-                        }
-                    }
+                    item.feed = feed
+//                    var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
+//                    request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
+//                    let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [Feed]
+//                    
+//                    if (results.count > 0) {
+//                        if let fetchedFeed = results[0] as Feed? {
+//                            println("Appended item \(item.feedItemName) to feed \(fetchedFeed.feedName)")
+//                        }
+//                    }
                 }
             }
         }
@@ -207,9 +226,16 @@
             
             if parsedFeeds == feeds.count {
                 dispatch_async(backgroundQueue, {
+                    
+                    if (self.oldFeedItems!.count > 0) {
+                        for item in self.oldFeedItems! {
+                            item.shouldShowInFeed = false
+                        }
+                    }
+
                     self.saveBackgroundContext()
                     self.parsedFeeds = 0
-                    
+                    self.lastServerUpdatedDate = NSDate()
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         self.delegate?.coreDataManagerDidFinishDownloadingFeeds(self.fetchFeeds())
                     })
@@ -217,16 +243,11 @@
             }
         }
         
+        var oldFeedItems:[FeedItem]?
         func deleteFeedItemsWithCompletionClosure(completionClosure: () -> ()) {
             var request: NSFetchRequest = NSFetchRequest(entityName:"FeedItem")
             let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [FeedItem]
-            
-            if (results.count > 0) {
-                for item in results {
-                    item.shouldShowInFeed = false
-                }
-                saveBackgroundContext()
-            }
+            oldFeedItems = results
             completionClosure()
         }
         
@@ -285,7 +306,6 @@
             return backgroundContext
             }()
 
-        
         // MARK: - Core Data Saving support
         
         func saveMainContext () {

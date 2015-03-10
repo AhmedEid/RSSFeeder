@@ -10,7 +10,8 @@
 		9E069D861AAE843600E2644C /* UIColorHexExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E069D851AAE843600E2644C /* UIColorHexExtension.swift */; };
 		9E069D881AAE857700E2644C /* MenuHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E069D871AAE857700E2644C /* MenuHeaderView.swift */; };
 		9E069D8A1AAE858300E2644C /* MenuHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E069D891AAE858300E2644C /* MenuHeaderView.xib */; };
-		9E1026221AAF4D0700DDC9A1 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1026211AAF4D0700DDC9A1 /* NetworkMonitor.swift */; };
+		9E1026241AAF7DBC00DDC9A1 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1026231AAF7DBC00DDC9A1 /* FeedItem.swift */; };
+		9E1026261AAF7DBD00DDC9A1 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1026251AAF7DBD00DDC9A1 /* Feed.swift */; };
 		9E28EFCA1AAE400F00D4729F /* ToolbarProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */; };
 		9E28EFCC1AAE401C00D4729F /* ToolbarProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */; };
 		9E82C6431AAE55410044CE69 /* FeedItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */; };
@@ -23,8 +24,6 @@
 		9EA5B6CB1AABE5B400603C5A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EA5B6C91AABE5B400603C5A /* LaunchScreen.xib */; };
 		9EA5B6D71AABE5B500603C5A /* RSSFeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6D61AABE5B500603C5A /* RSSFeederTests.swift */; };
 		9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */; };
-		9EA5B6E31AABEA0A00603C5A /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E21AABEA0A00603C5A /* FeedItem.swift */; };
-		9EA5B6E51AABEA0B00603C5A /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E41AABEA0B00603C5A /* Feed.swift */; };
 		9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */; };
 		9EF11EA01AAE5B24001053F3 /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */; };
 /* End PBXBuildFile section */
@@ -43,7 +42,8 @@
 		9E069D851AAE843600E2644C /* UIColorHexExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorHexExtension.swift; sourceTree = "<group>"; };
 		9E069D871AAE857700E2644C /* MenuHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuHeaderView.swift; sourceTree = "<group>"; };
 		9E069D891AAE858300E2644C /* MenuHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuHeaderView.xib; sourceTree = "<group>"; };
-		9E1026211AAF4D0700DDC9A1 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		9E1026231AAF7DBC00DDC9A1 /* FeedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
+		9E1026251AAF7DBD00DDC9A1 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarProgressView.swift; sourceTree = "<group>"; };
 		9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToolbarProgressView.xib; sourceTree = "<group>"; };
 		9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItemTableViewCell.swift; sourceTree = "<group>"; };
@@ -60,8 +60,6 @@
 		9EA5B6D51AABE5B500603C5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9EA5B6D61AABE5B500603C5A /* RSSFeederTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeederTests.swift; sourceTree = "<group>"; };
 		9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = ../CoreDataManager.swift; sourceTree = "<group>"; };
-		9EA5B6E21AABEA0A00603C5A /* FeedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
-		9EA5B6E41AABEA0B00603C5A /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HTML.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -142,7 +140,6 @@
 				9E28EFC61AAE3FD700D4729F /* View Controllers */,
 				9E28EFC71AAE3FF300D4729F /* Views */,
 				9EA5B6E61AABEA1400603C5A /* Model */,
-				9E1026211AAF4D0700DDC9A1 /* NetworkMonitor.swift */,
 				9EA5B6C91AABE5B400603C5A /* LaunchScreen.xib */,
 				9EA1419D1AAE506A00A2A76C /* Extensions */,
 				9EA5B6BB1AABE5B400603C5A /* Supporting Files */,
@@ -178,10 +175,10 @@
 		9EA5B6E61AABEA1400603C5A /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */,
 				9EA5B6BF1AABE5B400603C5A /* RSSFeeder.xcdatamodeld */,
-				9EA5B6E41AABEA0B00603C5A /* Feed.swift */,
-				9EA5B6E21AABEA0A00603C5A /* FeedItem.swift */,
+				9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */,
+				9E1026251AAF7DBD00DDC9A1 /* Feed.swift */,
+				9E1026231AAF7DBC00DDC9A1 /* FeedItem.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -290,15 +287,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EA5B6C31AABE5B400603C5A /* ViewController.swift in Sources */,
+				9E1026261AAF7DBD00DDC9A1 /* Feed.swift in Sources */,
 				9EF11EA01AAE5B24001053F3 /* String+HTML.swift in Sources */,
-				9EA5B6E51AABEA0B00603C5A /* Feed.swift in Sources */,
 				9EA5B6BE1AABE5B400603C5A /* AppDelegate.swift in Sources */,
 				9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */,
 				9E069D861AAE843600E2644C /* UIColorHexExtension.swift in Sources */,
 				9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */,
-				9EA5B6E31AABEA0A00603C5A /* FeedItem.swift in Sources */,
 				9E069D881AAE857700E2644C /* MenuHeaderView.swift in Sources */,
-				9E1026221AAF4D0700DDC9A1 /* NetworkMonitor.swift in Sources */,
+				9E1026241AAF7DBC00DDC9A1 /* FeedItem.swift in Sources */,
 				9EA5B6C11AABE5B400603C5A /* RSSFeeder.xcdatamodeld in Sources */,
 				9E28EFCA1AAE400F00D4729F /* ToolbarProgressView.swift in Sources */,
 				9E82C6431AAE55410044CE69 /* FeedItemTableViewCell.swift in Sources */,

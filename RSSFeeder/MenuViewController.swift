@@ -51,7 +51,6 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         
         let fetchedFeeds = CoreDataManager.shared.fetchFeeds()
         populateDataWithFeeds(fetchedFeeds)
-//        loadData()
     }
     
     //MARK: Data
@@ -62,7 +61,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         }
         
         isDownloadingFeeds = true
-        CoreDataManager.shared.loadFeedsFromServer()
+        CoreDataManager.shared.loadFeedsFromServer(force: true)
     }
     
     func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
