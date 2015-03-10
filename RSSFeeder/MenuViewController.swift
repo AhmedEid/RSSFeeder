@@ -25,7 +25,9 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     @IBOutlet weak var tableView: UITableView!
     let refreshControl = UIRefreshControl()
     
+    
     var delegate: MenuDelegate?
+    var isDownloadingFeeds = false
     
     @IBAction func menuCloseButtonTapped(sender: AnyObject) {
         delegate?.menuCloseButtonTapped()
@@ -42,16 +44,33 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         tableView.addSubview(refreshControl)
         
         CoreDataManager.shared.delegate = self
-        loadData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let fetchedFeeds = CoreDataManager.shared.fetchFeeds()
+        populateDataWithFeeds(fetchedFeeds)
+//        loadData()
     }
     
     //MARK: Data
     
     func loadData () {
+        if isDownloadingFeeds == true {
+            return;
+        }
+        
+        isDownloadingFeeds = true
         CoreDataManager.shared.loadFeedsFromServer()
     }
     
     func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
+            populateDataWithFeeds(feeds)
+    }
+    
+    func populateDataWithFeeds(feeds:[Feed]) {
+        isDownloadingFeeds = false
         self.feeds = feeds
         tableView.reloadData()
         refreshControl.endRefreshing()
@@ -89,10 +108,12 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     internal func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("FeedItemTableViewCell", forIndexPath: indexPath) as! FeedItemTableViewCell
         let feed = feeds[indexPath.section]
-        var itemsArray : [FeedItem] = feed.items.allObjects as! [FeedItem]
-        let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-        let item = sortedItemsArray[indexPath.row]
-        cell.item = item;
+        if let itemsArray : [FeedItem] = feed.items.allObjects as? [FeedItem] {
+            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+            let item = sortedItemsArray[indexPath.row]
+            cell.item = item;
+        }
+        
         return cell
     }
     

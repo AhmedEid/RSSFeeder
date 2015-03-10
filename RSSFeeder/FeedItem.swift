@@ -18,6 +18,7 @@ class FeedItem: NSManagedObject {
     @NSManaged var feedItemPublishedString: String
     @NSManaged var feedItemDescription: String
     @NSManaged var feedItemURLString: String
-    @NSManaged var feed: NSManagedObject
+    @NSManaged var shouldShowInFeed:Bool
+    @NSManaged var feed: Feed
 
 }

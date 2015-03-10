@@ -14,8 +14,8 @@ class ToolbarProgressView :UIView {
     @IBOutlet weak var progressViewPageControl: UIPageControl!
     
     override func awakeFromNib() {
-        progressViewPageControl.currentPageIndicatorTintColor = UIColor.grayColor()
-        progressViewPageControl.pageIndicatorTintColor = UIColor.redColor()
+        progressViewPageControl.currentPageIndicatorTintColor = UIColor.blackColor()
+        progressViewPageControl.pageIndicatorTintColor = UIColor(rgba:"#c7c7c7")
         progressViewPageControl.backgroundColor = UIColor.clearColor()
     }
 }

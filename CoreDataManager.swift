@@ -42,7 +42,8 @@
         var currentFeed:Feed?
         
         var hasParsedChannelTitle:Bool = false
-        
+        var parsedFeeds = 0
+
         //MARK: - Singleton
         
         class var shared:CoreDataManager{
@@ -60,24 +61,47 @@
         //MARK: - Feed Loading
         
         func loadFeedsFromServer() {
-            dispatch_async(backgroundQueue, {
-                for feedURLString in self.feeds {
-                    println(feedURLString)
-                    self.parser = NSXMLParser(contentsOfURL:NSURL(string: feedURLString))!
-                    self.parser.delegate = self
-                    self.parser.parse()
-                }
+            deleteFeedItemsWithCompletionClosure({
+                self.parsedFeeds = 0
+                dispatch_async(self.backgroundQueue, {
+                    for feedURLString in self.feeds {
+                        println(feedURLString)
+                        self.parser = NSXMLParser(contentsOfURL:NSURL(string: feedURLString))!
+                        self.parser.delegate = self
+                        self.parser.parse()
+                    }
+                })
             })
         }
         
         func fetchFeeds() -> [Feed] {
             let request = NSFetchRequest(entityName: "Feed")
-            if let results = managedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed] {
+            if let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed] {
                 for feed in results {
-                    println("Fetched Feed \(feed.feedName)")
+                    if (feed.items.count == 0){
+                        let items = itemsForFeed(feed)
+                        let itemsSet = NSSet(array: items)
+                        let itemsFilteredSet = itemsSet.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
+                        feed.items = itemsSet
+
+                    } else {
+                        let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
+                        feed.items = set
+                       
+                    }
+                    println("Fetched Feed \(feed.feedName) with items \(feed.items.count)")
                 }
                 
                 return results as [Feed]
+            }
+            return []
+        }
+        
+        func itemsForFeed(feed:Feed) -> ([FeedItem]) {
+            let request = NSFetchRequest(entityName: "FeedItem")
+            request.predicate = NSPredicate(format: "feed = %@", feed)
+            if let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as? [FeedItem] {
+                return results as [FeedItem]
             }
             return []
         }
@@ -125,32 +149,27 @@
                 var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
                 request.predicate = NSPredicate(format: "feedName = %@", feedName)
                 
-                var results : [Feed]? = managedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed]
+                var results : [Feed]? = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed]
                 
                 if (results != nil && results?.count > 0) {
                     currentFeed = results![0] as Feed
                     println("Fetched feed : \(currentFeed!.feedName)")
                 } else {
-                    if let feed = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(Feed), inManagedObjectContext: self.managedObjectContext!) as? Feed {
+                    if let feed = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(Feed), inManagedObjectContext: self.backgroundManagedObjectContext!) as? Feed {
                         feed.feedName = feedName;
                         currentFeed = feed
+                        saveBackgroundContext()
                         println("Created Feed named \(feed.feedName)")
                     }
                 }
             } else if elementName == "item" {
-                let item = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(FeedItem), inManagedObjectContext: self.managedObjectContext!) as! FeedItem
+                let item = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(FeedItem), inManagedObjectContext: self.backgroundManagedObjectContext!) as! FeedItem
+                item.shouldShowInFeed = true
                 item.feedItemName = feedItemName
                 item.feedItemURLString = feedItemURLString
                 //            item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
-//                item.feedItemDescription = feedItemDescription
+                item.feedItemDescription = feedItemDescription
                 
-                if count(feedItemDescription)>0 {
-                    let regex:NSRegularExpression = NSRegularExpression(pattern: "<.*?>", options: NSRegularExpressionOptions.CaseInsensitive, error: nil)!
-                    let range = NSMakeRange(0, count(feedItemDescription))
-                    let description = regex.stringByReplacingMatchesInString(feedItemDescription, options: NSMatchingOptions.allZeros, range: range, withTemplate: "")
-                    item.feedItemDescription = description
-                }
-    
                 dateFormatter.dateFormat = "EEE, dd MM yyyy HH:mm:ss zzz"
                 if let date = dateFormatter.dateFromString(feedItemPublishedDate) {
                     item.feedItemPublishedDate = date
@@ -158,7 +177,6 @@
                     dateFormatter.dateFormat = "hh:mm a";
                     let dateString = dateFormatter.stringFromDate(date)
                     item.feedItemPublishedString = dateString
-
                     
                     let calendar = NSCalendar.currentCalendar()
                     let comp = calendar.components((NSCalendarUnit.HourCalendarUnit | NSCalendarUnit.MinuteCalendarUnit), fromDate: date)
@@ -168,12 +186,13 @@
                 if let feed = currentFeed {
                     var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
                     request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
-                    let results = managedObjectContext!.executeFetchRequest(request, error: nil) as! [Feed]
+                    let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [Feed]
                     
                     if (results.count > 0) {
                         if let fetchedFeed = results[0] as Feed? {
                             if let manyRelation = fetchedFeed.valueForKeyPath("items") as? NSMutableSet {
                                 manyRelation.addObject(item)
+                                
                                 println("Appended item \(item.feedItemName) to feed \(fetchedFeed.feedName)")
                             }
                         }
@@ -184,13 +203,31 @@
         
         func parserDidEndDocument(parser: NSXMLParser) {
             hasParsedChannelTitle = false
-            dispatch_async(backgroundQueue, {
-                self.saveContext()
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.delegate?.coreDataManagerDidFinishDownloadingFeeds(self.fetchFeeds())
+            parsedFeeds += 1
+            
+            if parsedFeeds == feeds.count {
+                dispatch_async(backgroundQueue, {
+                    self.saveBackgroundContext()
+                    self.parsedFeeds = 0
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        self.delegate?.coreDataManagerDidFinishDownloadingFeeds(self.fetchFeeds())
+                    })
                 })
-            })
+            }
+        }
+        
+        func deleteFeedItemsWithCompletionClosure(completionClosure: () -> ()) {
+            var request: NSFetchRequest = NSFetchRequest(entityName:"FeedItem")
+            let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [FeedItem]
+            
+            if (results.count > 0) {
+                for item in results {
+                    item.shouldShowInFeed = false
+                }
+                saveBackgroundContext()
+            }
+            completionClosure()
         }
         
         //MARK: - Core Data Stack
@@ -237,22 +274,36 @@
             if coordinator == nil {
                 return nil
             }
-            var managedObjectContext = NSManagedObjectContext()
+            var managedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
             managedObjectContext.persistentStoreCoordinator = coordinator
             return managedObjectContext
             }()
         
+        lazy var backgroundManagedObjectContext: NSManagedObjectContext? = {
+            var backgroundContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.PrivateQueueConcurrencyType)
+            backgroundContext.parentContext = self.managedObjectContext
+            return backgroundContext
+            }()
+
+        
         // MARK: - Core Data Saving support
         
-        func saveContext () {
+        func saveMainContext () {
             if let moc = self.managedObjectContext {
                 var error: NSError? = nil
                 if moc.hasChanges && !moc.save(&error) {
-                    // Replace this implementation with code to handle the error appropriately.
-                    // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                     NSLog("Unresolved error \(error), \(error!.userInfo)")
                     abort()
                 }
+            }
+        }
+        
+        func saveBackgroundContext() {
+            if let moc = self.backgroundManagedObjectContext {
+                var error: NSError? = nil
+                moc.save(&error)
+                saveMainContext()
+                println("Saved background MOC")
             }
         }
     }

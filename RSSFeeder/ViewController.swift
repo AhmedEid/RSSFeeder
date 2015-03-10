@@ -273,7 +273,6 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         let leftImageButton = UIBarButtonItem(customView: leftImageView)
         
         let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
-        leftFeedItem.width = 200;
         
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         
@@ -293,7 +292,6 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         }
         
         let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
-        rightFeedItem.width = 200;
 
         let rightImage = UIImage(named: "icon-arrow-small")
         let mirroredRightImage = UIImage(CGImage: rightImage!.CGImage, scale:rightImage!.scale , orientation: .UpMirrored)
