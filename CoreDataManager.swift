@@ -74,14 +74,19 @@
             //Check if time alapsed > 300 seconds from last update
             //Load Data 
             
-            if let lastInitializedDate = initializedDate {
-                let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastInitializedDate)
-                println(elapsedTime)
-                //Update every 300 seconds in the foreground
-                //Reset this when app comes back into foreground
-                if Int(elapsedTime) > 60 {
-                    initializedDate = NSDate()
-                    loadData()
+            if let lastServerUpdatedDate = lastServerUpdatedDate {
+                let lastServerElapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastServerUpdatedDate)
+                println(lastServerElapsedTime)
+                if Int(lastServerElapsedTime) > 60 {
+                    if let lastInitializedDate = initializedDate {
+                        let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastInitializedDate)
+                        println(elapsedTime)
+                        //Update every 300 seconds in the foreground
+                        if Int(elapsedTime) > 300 {
+                            initializedDate = NSDate()
+                            loadData()
+                        }
+                    }
                 }
             }
         }
@@ -93,7 +98,6 @@
                 loadData()
             } else {
                 //Never more than once per minute unless initiated by the user
-                
                 if let lastUpdatedDate = lastServerUpdatedDate {
                     let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastUpdatedDate)
                     println(elapsedTime)
