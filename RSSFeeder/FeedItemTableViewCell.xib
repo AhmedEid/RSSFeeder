@@ -54,6 +54,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="feedItemDescriptionLabel" destination="TbY-Kc-6LV" id="JR1-DO-ZFg"/>
+                <outlet property="feedItemDescriptionLabelHeightConstraint" destination="yrO-bP-Ncf" id="e4P-Mp-Hm8"/>
                 <outlet property="feedItemPublishedDateLabel" destination="n3x-EA-BWK" id="Sca-Am-rzn"/>
                 <outlet property="feedItemTitleLabel" destination="vOg-rY-z0W" id="1wF-G3-nsJ"/>
             </connections>
