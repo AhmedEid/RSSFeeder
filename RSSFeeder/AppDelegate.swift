@@ -27,7 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-        CoreDataManager.shared.loadFeedsFromServer(force: false)
+        //Change to false if you wish to not auto refresh all feeds in app entering foreground.
+        
+        CoreDataManager.shared.loadFeedsFromServer(force: true)
     }
 
     func applicationDidBecomeActive(application: UIApplication) {

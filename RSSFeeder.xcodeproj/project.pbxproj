@@ -12,6 +12,7 @@
 		9E069D8A1AAE858300E2644C /* MenuHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E069D891AAE858300E2644C /* MenuHeaderView.xib */; };
 		9E1026241AAF7DBC00DDC9A1 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1026231AAF7DBC00DDC9A1 /* FeedItem.swift */; };
 		9E1026261AAF7DBD00DDC9A1 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1026251AAF7DBD00DDC9A1 /* Feed.swift */; };
+		9E10262F1AB0B2FF00DDC9A1 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E10262E1AB0B2FF00DDC9A1 /* NSString+HTML.m */; };
 		9E28EFCA1AAE400F00D4729F /* ToolbarProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */; };
 		9E28EFCC1AAE401C00D4729F /* ToolbarProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */; };
 		9E82C6431AAE55410044CE69 /* FeedItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */; };
@@ -25,7 +26,6 @@
 		9EA5B6D71AABE5B500603C5A /* RSSFeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6D61AABE5B500603C5A /* RSSFeederTests.swift */; };
 		9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */; };
 		9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */; };
-		9EF11EA01AAE5B24001053F3 /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +45,8 @@
 		9E1026231AAF7DBC00DDC9A1 /* FeedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		9E1026251AAF7DBD00DDC9A1 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		9E1026291AB0959F00DDC9A1 /* RSSFeeder-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSFeeder-Bridging-Header.h"; sourceTree = "<group>"; };
+		9E10262D1AB0B2FF00DDC9A1 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
+		9E10262E1AB0B2FF00DDC9A1 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarProgressView.swift; sourceTree = "<group>"; };
 		9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToolbarProgressView.xib; sourceTree = "<group>"; };
 		9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItemTableViewCell.swift; sourceTree = "<group>"; };
@@ -62,7 +64,6 @@
 		9EA5B6D61AABE5B500603C5A /* RSSFeederTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeederTests.swift; sourceTree = "<group>"; };
 		9EA5B6E01AABE94E00603C5A /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = ../CoreDataManager.swift; sourceTree = "<group>"; };
 		9EA5B6E71AAC12E900603C5A /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
-		9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HTML.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,8 +109,9 @@
 		9EA1419D1AAE506A00A2A76C /* Extensions and Subclasses */ = {
 			isa = PBXGroup;
 			children = (
-				9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */,
 				9E069D851AAE843600E2644C /* UIColorHexExtension.swift */,
+				9E10262D1AB0B2FF00DDC9A1 /* NSString+HTML.h */,
+				9E10262E1AB0B2FF00DDC9A1 /* NSString+HTML.m */,
 			);
 			name = "Extensions and Subclasses";
 			sourceTree = "<group>";
@@ -290,9 +292,9 @@
 			files = (
 				9EA5B6C31AABE5B400603C5A /* ViewController.swift in Sources */,
 				9E1026261AAF7DBD00DDC9A1 /* Feed.swift in Sources */,
-				9EF11EA01AAE5B24001053F3 /* String+HTML.swift in Sources */,
 				9EA5B6BE1AABE5B400603C5A /* AppDelegate.swift in Sources */,
 				9EA5B6E81AAC12E900603C5A /* MenuViewController.swift in Sources */,
+				9E10262F1AB0B2FF00DDC9A1 /* NSString+HTML.m in Sources */,
 				9E069D861AAE843600E2644C /* UIColorHexExtension.swift in Sources */,
 				9EA5B6E11AABE94E00603C5A /* CoreDataManager.swift in Sources */,
 				9E069D881AAE857700E2644C /* MenuHeaderView.swift in Sources */,

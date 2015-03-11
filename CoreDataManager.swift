@@ -30,7 +30,7 @@
         
         //Background Queue for parsing XML Data to not block main thread
         let backgroundQueue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
-
+        
         //XML Parsing
         var parser: NSXMLParser = NSXMLParser()
         var feedName: String = String()
@@ -54,7 +54,7 @@
         
         let secondsToWaitBeforeUpdatingFeedsFromServer = 300
         var loadingTimer = NSTimer()    //Timer for passively updating data after 300 seconds in foreground
-
+        
         //MARK: - Singleton / Init
         class var shared:CoreDataManager{
             get {
@@ -75,9 +75,6 @@
         }
         
         func checkIfPassiveDataUpdatePossible(timer:NSTimer) {
-            //Check if not downloading/parsing data 
-            //Check if time alapsed > 300 seconds from last update
-            //Load Data if possible
             
             if let lastServerUpdatedDate = lastServerUpdatedDate {
                 let lastServerElapsedTime = NSDate().timeIntervalSinceDate(lastServerUpdatedDate)
@@ -87,6 +84,7 @@
                         //Update every 300 seconds in the foreground
                         if Int(elapsedTime) > secondsToWaitBeforeUpdatingFeedsFromServer {
                             lastPassiveRefreshDate = NSDate()
+                            println("Passively updating feeds because \(secondsToWaitBeforeUpdatingFeedsFromServer) seconds have passed")
                             loadData()
                             return
                         }
@@ -135,7 +133,7 @@
                     //Filter out feed items that should not be shown in feed
                     let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
                     feed.items = set
-                    println("Fetched Feed \(feed.feedName) from CoreData with items \(feed.items.count)")
+                    //                    println("Fetched Feed \(feed.feedName) from CoreData with \(feed.items.count) items")
                 }
                 let sortedFeeds : [Feed] = results.sorted({ $0.feedName > $1.feedName})
                 return sortedFeeds
@@ -198,8 +196,8 @@
                 item.shouldShowInFeed = true
                 item.feedItemName = feedItemName
                 item.feedItemURLString = feedItemURLString
- //               item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
-                item.feedItemDescription = feedItemDescription
+                //               item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
+                item.feedItemDescription = NSString(string: feedItemDescription).stringByConvertingHTMLToPlainText()
                 
                 dateFormatter.dateFormat = "EEE, dd MM yyyy HH:mm:ss zzz"
                 if let date = dateFormatter.dateFromString(feedItemPublishedDate) {
@@ -232,11 +230,12 @@
                             item.shouldShowInFeed = false
                         }
                     }
-
+                    
                     self.saveBackgroundContext()
                     self.parsedFeeds = 0
                     self.lastServerUpdatedDate = NSDate()
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        println("Did Finish downloading feeds")
                         self.delegate?.coreDataManagerDidFinishDownloadingFeeds(self.fetchFeeds())
                     })
                 })
@@ -248,7 +247,7 @@
             var request: NSFetchRequest = NSFetchRequest(entityName:"FeedItem")
             let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [FeedItem]
             oldFeedItems = results //Will be filtered out of feed.items before passing along to delegate
-
+            
             completionClosure()
         }
         
@@ -306,7 +305,7 @@
             backgroundContext.parentContext = self.managedObjectContext
             return backgroundContext
             }()
-
+        
         // MARK: - Core Data Saving support
         
         func saveMainContext () {

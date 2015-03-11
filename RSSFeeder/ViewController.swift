@@ -275,58 +275,60 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     
     func setupToolbar() {
 
-        //Left Arrow View
-        let leftImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
-        leftImageView.frame = CGRectMake(0, 0, 6, 10)
-        let leftImageButton = UIBarButtonItem(customView: leftImageView)
-        
-        //Left Feed Button
-        let previousIndex = self.indexOfCurrentFeed-1
-        var previousFeedTitle = ""
-        if (previousIndex >= 0) {
-            let previousFeed = feeds[previousIndex]
-            previousFeedTitle = previousFeed.feedName
-        }
-        let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
-        
-        leftFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
-        
-        let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        
-        //Progress View
-        toolbarProgressView = NSBundle.mainBundle().loadNibNamed("ToolbarProgressView", owner: self, options: nil)[0] as? ToolbarProgressView
-        toolbarProgressView?.frame = CGRectMake(0, 0, 250, 20)
-        toolbarProgressView?.progressViewTextLabel.text = currentFeed?.feedName
-        toolbarProgressView?.progressViewPageControl.numberOfPages = feeds.count
-        toolbarProgressView?.progressViewPageControl.currentPage = indexOfCurrentFeed
-        
-        let progressViewBarButtonItem = UIBarButtonItem(customView: toolbarProgressView!)
-        
-        //Next Feed Button
-        let nextIndex = self.indexOfCurrentFeed+1
-        var nextFeedTitle = ""
-        if (nextIndex < feeds.count) {
-            let nextFeed = feeds[nextIndex]
-            nextFeedTitle = nextFeed.feedName
-        }
-        
-        let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
-        rightFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
-
-        //Right  Arrow View
-        let rightImage = UIImage(named: "icon-arrow-small")
-        let mirroredRightImage = UIImage(CGImage: rightImage!.CGImage, scale:rightImage!.scale , orientation: .UpMirrored)
-        let rightImageView = UIImageView(image: mirroredRightImage)
-        rightImageView.frame = CGRectMake(0, 0, 6, 10)
-        let rightImageButton = UIBarButtonItem(customView: rightImageView)
-        
-        if (!previousFeedTitle.isEmpty && !nextFeedTitle.isEmpty){
-            toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
-
-        } else if (nextFeedTitle.isEmpty){
-            toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
-        } else {
-            toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
+        if count(self.feeds) > 0 {
+            //Left Arrow View
+            let leftImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
+            leftImageView.frame = CGRectMake(0, 0, 6, 10)
+            let leftImageButton = UIBarButtonItem(customView: leftImageView)
+            
+            //Left Feed Button
+            let previousIndex = self.indexOfCurrentFeed-1
+            var previousFeedTitle = ""
+            if (previousIndex >= 0) {
+                let previousFeed = feeds[previousIndex]
+                previousFeedTitle = previousFeed.feedName
+            }
+            let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
+            
+            leftFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
+            
+            let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            
+            //Progress View
+            toolbarProgressView = NSBundle.mainBundle().loadNibNamed("ToolbarProgressView", owner: self, options: nil)[0] as? ToolbarProgressView
+            toolbarProgressView?.frame = CGRectMake(0, 0, 250, 20)
+            toolbarProgressView?.progressViewTextLabel.text = currentFeed?.feedName
+            toolbarProgressView?.progressViewPageControl.numberOfPages = feeds.count
+            toolbarProgressView?.progressViewPageControl.currentPage = indexOfCurrentFeed
+            
+            let progressViewBarButtonItem = UIBarButtonItem(customView: toolbarProgressView!)
+            
+            //Next Feed Button
+            let nextIndex = self.indexOfCurrentFeed+1
+            var nextFeedTitle = ""
+            if (nextIndex < feeds.count) {
+                let nextFeed = feeds[nextIndex]
+                nextFeedTitle = nextFeed.feedName
+            }
+            
+            let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
+            rightFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
+            
+            //Right  Arrow View
+            let rightImage = UIImage(named: "icon-arrow-small")
+            let mirroredRightImage = UIImage(CGImage: rightImage!.CGImage, scale:rightImage!.scale , orientation: .UpMirrored)
+            let rightImageView = UIImageView(image: mirroredRightImage)
+            rightImageView.frame = CGRectMake(0, 0, 6, 10)
+            let rightImageButton = UIBarButtonItem(customView: rightImageView)
+            
+            if (!previousFeedTitle.isEmpty && !nextFeedTitle.isEmpty){
+                toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
+                
+            } else if (nextFeedTitle.isEmpty){
+                toolbar.setItems([leftImageButton, leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem], animated: false)
+            } else {
+                toolbar.setItems([leftFeedItem, flexibleItem, progressViewBarButtonItem, flexibleItem, rightFeedItem, rightImageButton], animated: false)
+            }
         }
     }
     
