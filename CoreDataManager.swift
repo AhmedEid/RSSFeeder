@@ -44,8 +44,6 @@
         var hasParsedChannelTitle:Bool = false
         var parsedFeeds = 0
         
-        //Keeping track of loading times
-        
         //Last date app refreshed itself
         var lastPassiveRefreshDate:NSDate?
         
@@ -75,7 +73,6 @@
         }
         
         func checkIfPassiveDataUpdatePossible(timer:NSTimer) {
-            
             if let lastServerUpdatedDate = lastServerUpdatedDate {
                 let lastServerElapsedTime = NSDate().timeIntervalSinceDate(lastServerUpdatedDate)
                 if Int(lastServerElapsedTime) > 60 {
@@ -96,9 +93,9 @@
         
         //MARK: - Feed Loading
         
-        func loadFeedsFromServer(#force:Bool) {
-            //If user manually refreshed feeds, force update
-            if (force == true){
+        func loadFeedsFromServer(#forceDownload:Bool) {
+            //If user manually refreshed feeds or appLaunch, force update
+            if (forceDownload == true){
                 loadData()
             } else {
                 //Never more than once per minute unless initiated by the user
@@ -133,7 +130,6 @@
                     //Filter out feed items that should not be shown in feed
                     let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
                     feed.items = set
-                    //                    println("Fetched Feed \(feed.feedName) from CoreData with \(feed.items.count) items")
                 }
                 let sortedFeeds : [Feed] = results.sorted({ $0.feedName > $1.feedName})
                 return sortedFeeds
@@ -223,7 +219,6 @@
             if parsedFeeds == feeds.count {
                 //Completed parsing all feeds
                 dispatch_async(backgroundQueue, {
-                    
                     if (self.oldFeedItems!.count > 0) {
                         for item in self.oldFeedItems! {
                             item.shouldShowInFeed = false
@@ -245,7 +240,7 @@
         func deleteFeedItemsWithCompletionClosure(completionClosure: () -> ()) {
             var request: NSFetchRequest = NSFetchRequest(entityName:"FeedItem")
             let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [FeedItem]
-            oldFeedItems = results //Will be filtered out of feed.items before passing along to delegate
+            oldFeedItems = results //Old feed items be filtered out of feed.items before passing along to delegate
             
             completionClosure()
         }

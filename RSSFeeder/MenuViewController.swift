@@ -46,7 +46,6 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
         tableView.addSubview(refreshControl)
         
-        //Will recieve callback when load succeded/failed
         CoreDataManager.shared.delegate = self
     }
     
@@ -69,7 +68,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         isDownloadingFeeds = true
         
         //Ignore rules regarding loading times and force load of feeds initiated by user
-        CoreDataManager.shared.loadFeedsFromServer(force: true)
+        CoreDataManager.shared.loadFeedsFromServer(forceDownload: true)
     }
     
     func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {

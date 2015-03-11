@@ -50,12 +50,11 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     
     @IBAction func previousArticleButtonTapped(sender: AnyObject) {
         if let itemsArray : [FeedItem] = currentFeed?.items.allObjects as? [FeedItem] {
-            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-            
+            let itemsSortedByPublishedDate : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
             let previousIndex = self.indexOfCurrentArticleInFeed-1
             
             if (previousIndex >= 0) {
-                let previousFeedItem = sortedItemsArray[previousIndex]
+                let previousFeedItem = itemsSortedByPublishedDate[previousIndex]
                 self.currentFeedItem = previousFeedItem //Setting item will automatically load webView + update title
                 indexOfCurrentArticleInFeed = previousIndex
             }
@@ -64,12 +63,11 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     
     @IBAction func nextArticleButtonTapped(sender: AnyObject) {
         if let itemsArray : [FeedItem] = currentFeed?.items.allObjects as? [FeedItem] {
-            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-
+            let itemsSortedByPublishedDate : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
             let nextIndex = self.indexOfCurrentArticleInFeed+1
             
-            if (nextIndex < sortedItemsArray.count) {
-                let nextFeedItem = sortedItemsArray[nextIndex]
+            if (nextIndex < itemsSortedByPublishedDate.count) {
+                let nextFeedItem = itemsSortedByPublishedDate[nextIndex]
                 self.currentFeedItem = nextFeedItem //Setting item will automatically load webView + update title
                 indexOfCurrentArticleInFeed = nextIndex
             }
@@ -83,17 +81,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             self.currentFeed = previousFeed
             indexOfCurrentFeed = previousIndex
             setupToolbar()
-
-            //Set current article as first in previousFeed
-            if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
-                let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-                if let feedItemToPresent = sortedItemsArray.first {
-                    self.currentFeedItem = feedItemToPresent
-                    if let i = find(sortedItemsArray, feedItemToPresent) {
-                        self.indexOfCurrentArticleInFeed = i
-                    }
-                }
-            }
+            selectFirstFeedItemInFeed(currentFeed!)
         }
     }
     
@@ -104,18 +92,22 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             self.currentFeed = nextFeed
             indexOfCurrentFeed = nextIndex
             setupToolbar()
-
-            //Set current article as first in nextFeed
-            if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
-                let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-                if let feedItemToPresent = sortedItemsArray.first {
-                    self.currentFeedItem = feedItemToPresent
-                    if let i = find(sortedItemsArray, feedItemToPresent) {
-                        self.indexOfCurrentArticleInFeed = i
-                    }
+            selectFirstFeedItemInFeed(currentFeed!)
+        }
+    }
+    
+    func selectFirstFeedItemInFeed(feed:Feed) {
+        //Set current article as first in nextFeed
+        if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
+            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
+            if let feedItemToPresent = sortedItemsArray.first {
+                self.currentFeedItem = feedItemToPresent
+                if let i = find(sortedItemsArray, feedItemToPresent) {
+                    self.indexOfCurrentArticleInFeed = i
                 }
             }
         }
+
     }
     
     override func viewDidLoad() {
@@ -125,11 +117,27 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         topBarView.backgroundColor = UIColor(rgba: "#3A59A3")
         
         let previousButtonImage = UIImage(named: "icon-arrow-big")
-        let mirroredRightImage = UIImage(CGImage: previousButtonImage!.CGImage, scale:previousButtonImage!.scale , orientation: .UpMirrored)
+        let mirroredRightImage = UIImage(CGImage: previousButtonImage!.CGImage, scale:previousButtonImage!.scale , orientation: .UpMirrored)    //Mirror asset provided by designer
         nextArticleButton.setImage(mirroredRightImage, forState: .Normal)
         nextArticleButton.setImage(mirroredRightImage, forState: .Highlighted)
 
-        addMenuViewController()
+        //Add menu view controller
+        addChildViewController(menuViewController)
+        menuViewController.delegate = self
+        menuViewController.didMoveToParentViewController(self)
+        menuViewController.view.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(menuViewController.view)
+        
+        let topConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 0)
+        let widthConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 320)
+        
+        menuLeftConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1, constant: -widthConstraint.constant)
+        
+        let bottomConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1, constant: 0)
+        
+        view .addConstraints([topConstraint, menuLeftConstraint!, bottomConstraint, widthConstraint])
+        
+        toggleMenu()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -145,16 +153,9 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         self.feeds = feeds
         currentFeed = self.feeds.first
         setupToolbar()
-
-        //Set current article as first in feed
-        if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
-            let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
-            if let feedItemToPresent = sortedItemsArray.first {
-                self.currentFeedItem = feedItemToPresent
-                if let i = find(sortedItemsArray, feedItemToPresent) {
-                    self.indexOfCurrentArticleInFeed = i
-                }
-            }
+        
+        if let feed = currentFeed {
+            selectFirstFeedItemInFeed(feed)
         }
     }
     
@@ -166,25 +167,6 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     }
     
     //MARK - Menu & Menu Delegate
-    
-    func addMenuViewController() {
-        addChildViewController(menuViewController)
-        menuViewController.delegate = self
-        menuViewController.didMoveToParentViewController(self)
-        menuViewController.view.setTranslatesAutoresizingMaskIntoConstraints(false)
-        view.addSubview(menuViewController.view)
-        
-        let topConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 0)
-        let widthConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 320)
-
-        menuLeftConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1, constant: -widthConstraint.constant)
-        
-        let bottomConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1, constant: 0)
-        
-        view .addConstraints([topConstraint, menuLeftConstraint!, bottomConstraint, widthConstraint])
-        
-        toggleMenu()
-    }
     
     func toggleMenu() {
         isShowingMenu = !isShowingMenu

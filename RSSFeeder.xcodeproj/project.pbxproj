@@ -109,6 +109,7 @@
 		9EA1419D1AAE506A00A2A76C /* Extensions and Subclasses */ = {
 			isa = PBXGroup;
 			children = (
+				9E1026291AB0959F00DDC9A1 /* RSSFeeder-Bridging-Header.h */,
 				9E069D851AAE843600E2644C /* UIColorHexExtension.swift */,
 				9E10262D1AB0B2FF00DDC9A1 /* NSString+HTML.h */,
 				9E10262E1AB0B2FF00DDC9A1 /* NSString+HTML.m */,
@@ -145,7 +146,6 @@
 				9EA5B6E61AABEA1400603C5A /* Model */,
 				9EA5B6C91AABE5B400603C5A /* LaunchScreen.xib */,
 				9EA1419D1AAE506A00A2A76C /* Extensions and Subclasses */,
-				9E1026291AB0959F00DDC9A1 /* RSSFeeder-Bridging-Header.h */,
 				9EA5B6BB1AABE5B400603C5A /* Supporting Files */,
 			);
 			path = RSSFeeder;

@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: false)
-        CoreDataManager.shared.loadFeedsFromServer(force: true)
+        CoreDataManager.shared.loadFeedsFromServer(forceDownload: true)
         return true
     }
 
@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(application: UIApplication) {
         //Change to false if you wish to not auto refresh all feeds in app entering foreground.
         
-        CoreDataManager.shared.loadFeedsFromServer(force: true)
+        CoreDataManager.shared.loadFeedsFromServer(forceDownload: true)
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
