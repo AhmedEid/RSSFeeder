@@ -15,8 +15,8 @@ class MenuHeaderView:UIView {
     @IBOutlet weak var textLabel: UILabel!
     
     override func awakeFromNib() {
-        topSeparatorView.backgroundColor = UIColor.lightGrayColor()
-        bottomSeparatorView.backgroundColor = UIColor.lightGrayColor()
+        topSeparatorView.backgroundColor = UIColor(rgba: "#dbdbdb")
+        bottomSeparatorView.backgroundColor = UIColor(rgba: "#dbdbdb")
         backgroundColor = UIColor(rgba: "#f8f8f8")
         textLabel.textColor = UIColor(rgba: "#909090")
     }

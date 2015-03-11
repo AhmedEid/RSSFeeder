@@ -16,6 +16,7 @@ class FeedItemTableViewCell: UITableViewCell {
     @IBOutlet weak var feedItemPublishedDateLabel: UILabel!
     
     override func awakeFromNib() {
+        selectionStyle = .None
         self.feedItemPublishedDateLabel.textColor = UIColor(rgba: "#b1b1b1")
     }
     

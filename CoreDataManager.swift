@@ -136,7 +136,8 @@
                     feed.items = set
                     println("Fetched Feed \(feed.feedName) from CoreData with items \(feed.items.count)")
                 }
-                return results as [Feed]
+                let sortedFeeds : [Feed] = results.sorted({ $0.feedName > $1.feedName})
+                return sortedFeeds
             }
             return []
         }
@@ -196,7 +197,7 @@
                 item.shouldShowInFeed = true
                 item.feedItemName = feedItemName
                 item.feedItemURLString = feedItemURLString
-//                item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
+ //               item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
                 item.feedItemDescription = feedItemDescription
                 
                 dateFormatter.dateFormat = "EEE, dd MM yyyy HH:mm:ss zzz"

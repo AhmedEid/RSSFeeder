@@ -22,6 +22,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     }
 
     //View Controllers
+    let widthMenu = 310
     let menuViewController: MenuViewController! = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuViewController") as! MenuViewController
     
     //Views
@@ -174,7 +175,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         view.addSubview(menuViewController.view)
         
         let topConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 0)
-        let widthConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 300)
+        let widthConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 320)
 
         menuLeftConstraint = NSLayoutConstraint(item: menuViewController.view, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1, constant: -widthConstraint.constant)
         
@@ -242,6 +243,10 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     //MARK: Menu Delegate
     
     func didSelectFeedItem(feed: Feed, item:FeedItem) {
+        
+        //Load from Core Data Cache
+        populateWithFeeds(CoreDataManager.shared.fetchFeeds())
+        
         toggleMenu()
         self.currentFeed = feed
         self.currentFeedItem = item
@@ -272,7 +277,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
 
         //Left Arrow View
         let leftImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
-        leftImageView.frame = CGRectMake(0, 0, 7, 12)
+        leftImageView.frame = CGRectMake(0, 0, 6, 10)
         let leftImageButton = UIBarButtonItem(customView: leftImageView)
         
         //Left Feed Button
@@ -283,7 +288,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             previousFeedTitle = previousFeed.feedName
         }
         let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
-        leftFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont.systemFontOfSize(14)], forState: .Normal)
+        leftFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
         
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         
@@ -305,13 +310,13 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         }
         
         let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
-        rightFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont.systemFontOfSize(14)], forState: .Normal)
+        rightFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
 
         //Right  Arrow View
         let rightImage = UIImage(named: "icon-arrow-small")
         let mirroredRightImage = UIImage(CGImage: rightImage!.CGImage, scale:rightImage!.scale , orientation: .UpMirrored)
         let rightImageView = UIImageView(image: mirroredRightImage)
-        rightImageView.frame = CGRectMake(0, 0, 7, 12)
+        rightImageView.frame = CGRectMake(0, 0, 6, 10)
         let rightImageButton = UIBarButtonItem(customView: rightImageView)
         
         if (!previousFeedTitle.isEmpty && !nextFeedTitle.isEmpty){
