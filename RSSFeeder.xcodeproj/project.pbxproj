@@ -44,6 +44,7 @@
 		9E069D891AAE858300E2644C /* MenuHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuHeaderView.xib; sourceTree = "<group>"; };
 		9E1026231AAF7DBC00DDC9A1 /* FeedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		9E1026251AAF7DBD00DDC9A1 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
+		9E1026291AB0959F00DDC9A1 /* RSSFeeder-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSSFeeder-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E28EFC91AAE400F00D4729F /* ToolbarProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarProgressView.swift; sourceTree = "<group>"; };
 		9E28EFCB1AAE401C00D4729F /* ToolbarProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToolbarProgressView.xib; sourceTree = "<group>"; };
 		9E82C6421AAE55410044CE69 /* FeedItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedItemTableViewCell.swift; sourceTree = "<group>"; };
@@ -104,13 +105,13 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		9EA1419D1AAE506A00A2A76C /* Extensions */ = {
+		9EA1419D1AAE506A00A2A76C /* Extensions and Subclasses */ = {
 			isa = PBXGroup;
 			children = (
 				9EF11E9F1AAE5B24001053F3 /* String+HTML.swift */,
 				9E069D851AAE843600E2644C /* UIColorHexExtension.swift */,
 			);
-			name = Extensions;
+			name = "Extensions and Subclasses";
 			sourceTree = "<group>";
 		};
 		9EA5B6AF1AABE5B400603C5A = {
@@ -141,7 +142,8 @@
 				9E28EFC71AAE3FF300D4729F /* Views */,
 				9EA5B6E61AABEA1400603C5A /* Model */,
 				9EA5B6C91AABE5B400603C5A /* LaunchScreen.xib */,
-				9EA1419D1AAE506A00A2A76C /* Extensions */,
+				9EA1419D1AAE506A00A2A76C /* Extensions and Subclasses */,
+				9E1026291AB0959F00DDC9A1 /* RSSFeeder-Bridging-Header.h */,
 				9EA5B6BB1AABE5B400603C5A /* Supporting Files */,
 			);
 			path = RSSFeeder;
@@ -420,9 +422,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = RSSFeeder/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RSSFeeder/RSSFeeder-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
@@ -431,9 +436,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = RSSFeeder/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RSSFeeder/RSSFeeder-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;

@@ -288,6 +288,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             previousFeedTitle = previousFeed.feedName
         }
         let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
+        
         leftFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Helvetica-Light", size: 13)!], forState: UIControlState.Normal)
         
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)

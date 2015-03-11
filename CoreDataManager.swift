@@ -132,6 +132,7 @@
             let request = NSFetchRequest(entityName: "Feed")
             if let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as? [Feed] {
                 for feed in results {
+                    //Filter out feed items that should not be shown in feed
                     let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
                     feed.items = set
                     println("Fetched Feed \(feed.feedName) from CoreData with items \(feed.items.count)")

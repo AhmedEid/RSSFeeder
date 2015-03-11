@@ -36,6 +36,8 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     override internal func viewDidLoad() {
         
         super.viewDidLoad()
+        automaticallyAdjustsScrollViewInsets = false
+        
         tableView.backgroundColor = UIColor.whiteColor()
         topBarView.backgroundColor = UIColor(rgba: "#3A59A3")
         tableView.registerNib(UINib(nibName: "FeedItemTableViewCell", bundle: nil), forCellReuseIdentifier: "FeedItemTableViewCell")
@@ -101,7 +103,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 45
+        return 40
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

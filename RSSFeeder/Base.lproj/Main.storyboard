@@ -42,7 +42,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Feed" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m70-4U-Wbr">
-                                        <rect key="frame" x="44" y="35" width="512" height="20"/>
+                                        <rect key="frame" x="44" y="30" width="512" height="20"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -58,7 +58,7 @@
                                 <color key="backgroundColor" red="0.1647058824" green="0.25098039220000001" blue="0.56470588239999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="m70-4U-Wbr" firstAttribute="leading" secondItem="5Yh-BI-9fF" secondAttribute="trailing" id="5NP-6U-fRS"/>
-                                    <constraint firstItem="m70-4U-Wbr" firstAttribute="top" secondItem="d0x-p5-hCg" secondAttribute="top" constant="35" id="FIi-i2-KW0"/>
+                                    <constraint firstItem="m70-4U-Wbr" firstAttribute="top" secondItem="d0x-p5-hCg" secondAttribute="top" constant="30" id="FIi-i2-KW0"/>
                                     <constraint firstAttribute="trailing" secondItem="Fac-In-gQu" secondAttribute="trailing" constant="15" id="Fg6-Bo-BQV"/>
                                     <constraint firstAttribute="height" constant="64" id="crF-UM-yk0"/>
                                     <constraint firstAttribute="trailing" secondItem="m70-4U-Wbr" secondAttribute="trailing" constant="44" id="fPv-9A-Xyd"/>
@@ -106,13 +106,13 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="64"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ra7-bF-LWD">
-                                        <rect key="frame" x="43" y="30" width="513" height="20"/>
+                                        <rect key="frame" x="44" y="30" width="512" height="20"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A8N-ct-Eje">
-                                        <rect key="frame" x="-1" y="25" width="44" height="35"/>
+                                        <rect key="frame" x="0.0" y="25" width="44" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="CNT-e0-YOe"/>
                                             <constraint firstAttribute="width" constant="44" id="u0i-nV-0ik"/>
@@ -136,7 +136,7 @@
                                 <constraints>
                                     <constraint firstItem="A8N-ct-Eje" firstAttribute="top" secondItem="bjN-cn-Daw" secondAttribute="top" constant="25" id="3Jz-dG-LLb"/>
                                     <constraint firstAttribute="centerX" secondItem="Ra7-bF-LWD" secondAttribute="centerX" id="4Yv-ns-Ut7"/>
-                                    <constraint firstItem="A8N-ct-Eje" firstAttribute="leading" secondItem="bjN-cn-Daw" secondAttribute="leading" constant="-1" id="Di2-xY-oU2"/>
+                                    <constraint firstItem="A8N-ct-Eje" firstAttribute="leading" secondItem="bjN-cn-Daw" secondAttribute="leading" id="Di2-xY-oU2"/>
                                     <constraint firstItem="Ra7-bF-LWD" firstAttribute="top" secondItem="bjN-cn-Daw" secondAttribute="top" constant="30" id="PbY-3J-4ae"/>
                                     <constraint firstAttribute="trailing" secondItem="RXC-dW-npZ" secondAttribute="trailing" constant="10" id="SC8-j3-Bq0"/>
                                     <constraint firstItem="Ra7-bF-LWD" firstAttribute="leading" secondItem="A8N-ct-Eje" secondAttribute="trailing" id="hUf-Ap-GBE"/>
