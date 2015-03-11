@@ -28,8 +28,10 @@
             "http://feeds.feedburner.com/TechCrunchIT",
             "http://feeds.feedburner.com/TechCrunch/greentech"];
         
+        //Background Queue for parsing XML Data to not block main thread
         let backgroundQueue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
 
+        //XML Parsing
         var parser: NSXMLParser = NSXMLParser()
         var feedName: String = String()
         var feedItemName: String = String()
@@ -37,21 +39,23 @@
         var feedItemPublishedDate: String = String()
         var feedItemURLString: String = String()
         var eName: String = String()
-        
         let dateFormatter = NSDateFormatter()
-        
-        var initializedDate:NSDate?
-        var lastServerUpdatedDate: NSDate?
-        
         var currentFeed:Feed?
-        
         var hasParsedChannelTitle:Bool = false
         var parsedFeeds = 0
         
-        var loadingTimer = NSTimer()
-
-        //MARK: - Singleton
+        //Keeping track of loading times
         
+        //Last date app refreshed itself
+        var lastPassiveRefreshDate:NSDate?
+        
+        //Last date app recieved new feeds data from server
+        var lastServerUpdatedDate: NSDate?
+        
+        let secondsToWaitBeforeUpdatingFeedsFromServer = 300
+        var loadingTimer = NSTimer()    //Timer for passively updating data after 300 seconds in foreground
+
+        //MARK: - Singleton / Init
         class var shared:CoreDataManager{
             get {
                 struct Static {
@@ -65,27 +69,26 @@
         
         override init() {
             super.init()
-            loadingTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerFire:", userInfo: nil, repeats: true)
+            loadingTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkIfPassiveDataUpdatePossible:", userInfo: nil, repeats: true)
             loadingTimer.fire()
-            initializedDate = NSDate()
+            lastPassiveRefreshDate = NSDate()
         }
         
-        func timerFire(timer:NSTimer) {
+        func checkIfPassiveDataUpdatePossible(timer:NSTimer) {
             //Check if not downloading/parsing data 
             //Check if time alapsed > 300 seconds from last update
-            //Load Data 
+            //Load Data if possible
             
             if let lastServerUpdatedDate = lastServerUpdatedDate {
-                let lastServerElapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastServerUpdatedDate)
-                println(lastServerElapsedTime)
+                let lastServerElapsedTime = NSDate().timeIntervalSinceDate(lastServerUpdatedDate)
                 if Int(lastServerElapsedTime) > 60 {
-                    if let lastInitializedDate = initializedDate {
-                        let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastInitializedDate)
-                        println(elapsedTime)
+                    if let lastInitializedDate = lastPassiveRefreshDate {
+                        let elapsedTime = NSDate().timeIntervalSinceDate(lastInitializedDate)
                         //Update every 300 seconds in the foreground
-                        if Int(elapsedTime) > 300 {
-                            initializedDate = NSDate()
+                        if Int(elapsedTime) > secondsToWaitBeforeUpdatingFeedsFromServer {
+                            lastPassiveRefreshDate = NSDate()
                             loadData()
+                            return
                         }
                     }
                 }
@@ -96,13 +99,13 @@
         //MARK: - Feed Loading
         
         func loadFeedsFromServer(#force:Bool) {
+            //If user manually refreshed feeds, force update
             if (force == true){
                 loadData()
             } else {
                 //Never more than once per minute unless initiated by the user
                 if let lastUpdatedDate = lastServerUpdatedDate {
-                    let elapsedTime:NSTimeInterval  = NSDate().timeIntervalSinceDate(lastUpdatedDate)
-                    println(elapsedTime)
+                    let elapsedTime = NSDate().timeIntervalSinceDate(lastUpdatedDate)
                     if Int(elapsedTime) > 60 {
                         loadData()
                     }
@@ -117,7 +120,6 @@
                 self.parsedFeeds = 0
                 dispatch_async(self.backgroundQueue, {
                     for feedURLString in self.feeds {
-                        println(feedURLString)
                         self.parser = NSXMLParser(contentsOfURL:NSURL(string: feedURLString))!
                         self.parser.delegate = self
                         self.parser.parse()
@@ -132,9 +134,8 @@
                 for feed in results {
                     let set = feed.items.filteredSetUsingPredicate(NSPredicate(format: "shouldShowInFeed = %@", true))
                     feed.items = set
-                    println("Fetched Feed \(feed.feedName) with items \(feed.items.count)")
+                    println("Fetched Feed \(feed.feedName) from CoreData with items \(feed.items.count)")
                 }
-                
                 return results as [Feed]
             }
             return []
@@ -183,13 +184,11 @@
                 
                 if (results != nil && results?.count > 0) {
                     currentFeed = results![0] as Feed
-                    println("Fetched feed : \(currentFeed!.feedName)")
                 } else {
                     if let feed = NSEntityDescription.insertNewObjectForEntityForName(NSStringFromClass(Feed), inManagedObjectContext: self.backgroundManagedObjectContext!) as? Feed {
                         feed.feedName = feedName;
                         currentFeed = feed
                         saveBackgroundContext()
-                        println("Created Feed named \(feed.feedName)")
                     }
                 }
             } else if elementName == "item" {
@@ -197,7 +196,7 @@
                 item.shouldShowInFeed = true
                 item.feedItemName = feedItemName
                 item.feedItemURLString = feedItemURLString
-                //            item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
+//                item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
                 item.feedItemDescription = feedItemDescription
                 
                 dateFormatter.dateFormat = "EEE, dd MM yyyy HH:mm:ss zzz"
@@ -212,18 +211,8 @@
                     let comp = calendar.components((NSCalendarUnit.HourCalendarUnit | NSCalendarUnit.MinuteCalendarUnit), fromDate: date)
                 }
                 
-                
                 if let feed = currentFeed {
                     item.feed = feed
-//                    var request: NSFetchRequest = NSFetchRequest(entityName:"Feed")
-//                    request.predicate = NSPredicate(format: "feedName = %@", feed.feedName)
-//                    let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [Feed]
-//                    
-//                    if (results.count > 0) {
-//                        if let fetchedFeed = results[0] as Feed? {
-//                            println("Appended item \(item.feedItemName) to feed \(fetchedFeed.feedName)")
-//                        }
-//                    }
                 }
             }
         }
@@ -233,6 +222,7 @@
             parsedFeeds += 1
             
             if parsedFeeds == feeds.count {
+                //Completed parsing all feeds
                 dispatch_async(backgroundQueue, {
                     
                     if (self.oldFeedItems!.count > 0) {
@@ -255,7 +245,8 @@
         func deleteFeedItemsWithCompletionClosure(completionClosure: () -> ()) {
             var request: NSFetchRequest = NSFetchRequest(entityName:"FeedItem")
             let results = backgroundManagedObjectContext!.executeFetchRequest(request, error: nil) as! [FeedItem]
-            oldFeedItems = results
+            oldFeedItems = results //Will be filtered out of feed.items before passing along to delegate
+
             completionClosure()
         }
         
@@ -320,7 +311,6 @@
             if let moc = self.managedObjectContext {
                 var error: NSError? = nil
                 if moc.hasChanges && !moc.save(&error) {
-                    NSLog("Unresolved error \(error), \(error!.userInfo)")
                     abort()
                 }
             }
@@ -331,7 +321,6 @@
                 var error: NSError? = nil
                 moc.save(&error)
                 saveMainContext()
-                println("Saved background MOC")
             }
         }
     }

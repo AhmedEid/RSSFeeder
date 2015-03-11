@@ -12,11 +12,10 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     
     //Data 
     var feeds:[Feed] = []
-    
     var currentFeed:Feed?
-    
     var currentFeedItem:FeedItem? {
         didSet {
+            //Setting currentFeedItem will update title and load webView with feedItemURLString
             titleLabel.text = self.currentFeedItem?.feedItemName
             webView.loadRequest(NSURLRequest(URL: NSURL(string: self.currentFeedItem!.feedItemURLString)!))
         }
@@ -30,12 +29,12 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     @IBOutlet weak var webView: UIWebView!
     @IBOutlet weak var toolbar: UIToolbar!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var topBarView: UIView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     var blackOverlayView = UIView(frame: CGRectZero)
     var toolbarProgressView:ToolbarProgressView?
     
-    @IBOutlet weak var topBarView: UIView!
-    //Constraints
+    //Constraints (Used to animate menu in/out)
     var menuLeftConstraint:NSLayoutConstraint?
     
     //State
@@ -56,7 +55,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             
             if (previousIndex >= 0) {
                 let previousFeedItem = sortedItemsArray[previousIndex]
-                self.currentFeedItem = previousFeedItem
+                self.currentFeedItem = previousFeedItem //Setting item will automatically load webView + update title
                 indexOfCurrentArticleInFeed = previousIndex
             }
         }
@@ -70,7 +69,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             
             if (nextIndex < sortedItemsArray.count) {
                 let nextFeedItem = sortedItemsArray[nextIndex]
-                self.currentFeedItem = nextFeedItem
+                self.currentFeedItem = nextFeedItem //Setting item will automatically load webView + update title
                 indexOfCurrentArticleInFeed = nextIndex
             }
         }
@@ -81,8 +80,10 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         if (previousIndex >= 0) {
             let previousFeed = feeds[previousIndex]
             self.currentFeed = previousFeed
-            
-            //Set current article as first in feed
+            indexOfCurrentFeed = previousIndex
+            setupToolbar()
+
+            //Set current article as first in previousFeed
             if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
                 let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
                 if let feedItemToPresent = sortedItemsArray.first {
@@ -92,8 +93,6 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
                     }
                 }
             }
-            indexOfCurrentFeed = previousIndex
-            setupToolbar()
         }
     }
     
@@ -103,8 +102,9 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             let nextFeed = feeds[nextIndex]
             self.currentFeed = nextFeed
             indexOfCurrentFeed = nextIndex
-            
-            //Set current article as first in feed
+            setupToolbar()
+
+            //Set current article as first in nextFeed
             if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
                 let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
                 if let feedItemToPresent = sortedItemsArray.first {
@@ -114,8 +114,6 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
                     }
                 }
             }
-            
-            setupToolbar()
         }
     }
     
@@ -135,8 +133,9 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        //Load from Core Data Cache
         populateWithFeeds(CoreDataManager.shared.fetchFeeds())
-
     }
     
     //Mark: Data 
@@ -144,7 +143,8 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     func populateWithFeeds(feeds:[Feed]) {
         self.feeds = feeds
         currentFeed = self.feeds.first
-        
+        setupToolbar()
+
         //Set current article as first in feed
         if let itemsArray : [FeedItem] = self.currentFeed?.items.allObjects as? [FeedItem] {
             let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
@@ -155,7 +155,6 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
                 }
             }
         }
-        setupToolbar()
     }
     
     func coreDataManagerDidFinishDownloadingFeeds(feeds: [Feed]) {
@@ -190,6 +189,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         isShowingMenu = !isShowingMenu
         
         if (isShowingMenu){
+            //Hide Menu
             UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
             menuLeftConstraint?.constant = -menuViewController.view.bounds.size.width
             UIView.animateWithDuration(0.5, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
@@ -206,6 +206,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             })
             
         } else {
+            //Present Menu
             UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
 
             blackOverlayView = UIView(frame: CGRectZero)
@@ -225,7 +226,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
                 self.view.layoutIfNeeded()
                 self.blackOverlayView.alpha = 0.5
                 }, completion: { (completed) -> Void in
-                    let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognized")
+                    let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureRecognized") //Will dismiss menu
                     self.blackOverlayView.addGestureRecognizer(tapGesture)
             })
             
@@ -237,6 +238,8 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
             })
         }
     }
+    
+    //MARK: Menu Delegate
     
     func didSelectFeedItem(feed: Feed, item:FeedItem) {
         toggleMenu()
@@ -266,22 +269,25 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
     //MARK: Toolbar
     
     func setupToolbar() {
+
+        //Left Arrow View
+        let leftImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
+        leftImageView.frame = CGRectMake(0, 0, 7, 12)
+        let leftImageButton = UIBarButtonItem(customView: leftImageView)
         
+        //Left Feed Button
         let previousIndex = self.indexOfCurrentFeed-1
         var previousFeedTitle = ""
         if (previousIndex >= 0) {
             let previousFeed = feeds[previousIndex]
             previousFeedTitle = previousFeed.feedName
         }
-
-        let leftImageView = UIImageView(image: UIImage(named: "icon-arrow-small"))
-        leftImageView.frame = CGRectMake(0, 0, 10, 15)
-        let leftImageButton = UIBarButtonItem(customView: leftImageView)
-        
         let leftFeedItem = UIBarButtonItem(title: previousFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "previousFeedButtonTapped")
+        leftFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont.systemFontOfSize(14)], forState: .Normal)
         
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         
+        //Progress View
         toolbarProgressView = NSBundle.mainBundle().loadNibNamed("ToolbarProgressView", owner: self, options: nil)[0] as? ToolbarProgressView
         toolbarProgressView?.frame = CGRectMake(0, 0, 250, 20)
         toolbarProgressView?.progressViewTextLabel.text = currentFeed?.feedName
@@ -290,6 +296,7 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         
         let progressViewBarButtonItem = UIBarButtonItem(customView: toolbarProgressView!)
         
+        //Next Feed Button
         let nextIndex = self.indexOfCurrentFeed+1
         var nextFeedTitle = ""
         if (nextIndex < feeds.count) {
@@ -298,11 +305,13 @@ class ViewController: UIViewController, UIWebViewDelegate, MenuDelegate, CoreDat
         }
         
         let rightFeedItem = UIBarButtonItem(title:nextFeedTitle, style: UIBarButtonItemStyle.Plain, target: self, action: "nextFeedButtonTapped")
+        rightFeedItem.setTitleTextAttributes([NSFontAttributeName: UIFont.systemFontOfSize(14)], forState: .Normal)
 
+        //Right  Arrow View
         let rightImage = UIImage(named: "icon-arrow-small")
         let mirroredRightImage = UIImage(CGImage: rightImage!.CGImage, scale:rightImage!.scale , orientation: .UpMirrored)
         let rightImageView = UIImageView(image: mirroredRightImage)
-        rightImageView.frame = CGRectMake(0, 0, 10, 15)
+        rightImageView.frame = CGRectMake(0, 0, 7, 12)
         let rightImageButton = UIBarButtonItem(customView: rightImageView)
         
         if (!previousFeedTitle.isEmpty && !nextFeedTitle.isEmpty){

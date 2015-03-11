@@ -11,20 +11,20 @@ import UIKit
 import CoreData
 
 protocol MenuDelegate {
+    //Menu Delegate used to notify ViewController of selection of feed item
     func didSelectFeedItem(feed:Feed, item:FeedItem)
     func menuCloseButtonTapped()
 }
 
 class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDelegate, UITableViewDataSource, CoreDataManagerDelegate {
     
-    //Data
     internal var context: NSManagedObjectContext = CoreDataManager.shared.managedObjectContext!
     var feeds = [Feed]()
 
-    //Views
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+    @IBOutlet weak var topBarView: UIView!
     let refreshControl = UIRefreshControl()
-    
     
     var delegate: MenuDelegate?
     var isDownloadingFeeds = false
@@ -32,7 +32,6 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     @IBAction func menuCloseButtonTapped(sender: AnyObject) {
         delegate?.menuCloseButtonTapped()
     }
-    @IBOutlet weak var topBarView: UIView!
     
     override internal func viewDidLoad() {
         
@@ -45,12 +44,14 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
         tableView.addSubview(refreshControl)
         
+        //Will recieve callback when load succeded/failed
         CoreDataManager.shared.delegate = self
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        //Load from Core data cache
         let fetchedFeeds = CoreDataManager.shared.fetchFeeds()
         populateDataWithFeeds(fetchedFeeds)
     }
@@ -62,7 +63,10 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
             return;
         }
         
+        activityIndicatorView.startAnimating()
         isDownloadingFeeds = true
+        
+        //Ignore rules regarding loading times and force load of feeds initiated by user
         CoreDataManager.shared.loadFeedsFromServer(force: true)
     }
     
@@ -76,6 +80,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     
     func populateDataWithFeeds(feeds:[Feed]) {
         isDownloadingFeeds = false
+        activityIndicatorView.stopAnimating()
         self.feeds = feeds
         tableView.reloadData()
         refreshControl.endRefreshing()
@@ -114,6 +119,7 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
         let cell = tableView.dequeueReusableCellWithIdentifier("FeedItemTableViewCell", forIndexPath: indexPath) as! FeedItemTableViewCell
         let feed = feeds[indexPath.section]
         if let itemsArray : [FeedItem] = feed.items.allObjects as? [FeedItem] {
+            //Sort feed items by published date
             let sortedItemsArray : [FeedItem] = itemsArray.sorted({ $0.feedItemPublishedDate.compare($1.feedItemPublishedDate) == NSComparisonResult.OrderedDescending })
             let item = sortedItemsArray[indexPath.row]
             cell.item = item;

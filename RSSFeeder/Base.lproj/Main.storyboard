@@ -47,14 +47,23 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Fac-In-gQu">
+                                        <rect key="frame" x="565" y="30" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="3If-92-RyK"/>
+                                            <constraint firstAttribute="height" constant="20" id="evH-og-7js"/>
+                                        </constraints>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.1647058824" green="0.25098039220000001" blue="0.56470588239999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="m70-4U-Wbr" firstAttribute="leading" secondItem="5Yh-BI-9fF" secondAttribute="trailing" id="5NP-6U-fRS"/>
                                     <constraint firstItem="m70-4U-Wbr" firstAttribute="top" secondItem="d0x-p5-hCg" secondAttribute="top" constant="30" id="FIi-i2-KW0"/>
+                                    <constraint firstAttribute="trailing" secondItem="Fac-In-gQu" secondAttribute="trailing" constant="15" id="Fg6-Bo-BQV"/>
                                     <constraint firstAttribute="height" constant="64" id="crF-UM-yk0"/>
                                     <constraint firstAttribute="trailing" secondItem="m70-4U-Wbr" secondAttribute="trailing" constant="44" id="fPv-9A-Xyd"/>
                                     <constraint firstItem="5Yh-BI-9fF" firstAttribute="leading" secondItem="d0x-p5-hCg" secondAttribute="leading" id="g73-5f-xGT"/>
+                                    <constraint firstItem="Fac-In-gQu" firstAttribute="top" secondItem="d0x-p5-hCg" secondAttribute="top" constant="30" id="t4a-P2-bQv"/>
                                     <constraint firstItem="5Yh-BI-9fF" firstAttribute="top" secondItem="d0x-p5-hCg" secondAttribute="top" constant="15" id="wIE-02-DyL"/>
                                 </constraints>
                             </view>
@@ -72,6 +81,7 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="Fac-In-gQu" id="mVW-MM-7GU"/>
                         <outlet property="tableView" destination="wXq-AK-Bn8" id="Dhq-n0-XeL"/>
                         <outlet property="topBarView" destination="d0x-p5-hCg" id="lbu-bS-5ZZ"/>
                     </connections>
