@@ -77,6 +77,8 @@ class MenuViewController: UIViewController, NSFetchedResultsControllerDelegate, 
     
     func coreDataManagerDidFailDownloadingFeeds() {
         refreshControl.endRefreshing()
+        isDownloadingFeeds = false
+        activityIndicatorView.stopAnimating()
     }
     
     func populateDataWithFeeds(feeds:[Feed]) {
