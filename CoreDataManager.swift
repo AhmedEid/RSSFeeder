@@ -196,7 +196,6 @@
                 item.shouldShowInFeed = true
                 item.feedItemName = feedItemName
                 item.feedItemURLString = feedItemURLString
-                //               item.feedItemDescription = String(htmlEncodedString: feedItemDescription)
                 item.feedItemDescription = NSString(string: feedItemDescription).stringByConvertingHTMLToPlainText()
                 
                 dateFormatter.dateFormat = "EEE, dd MM yyyy HH:mm:ss zzz"
